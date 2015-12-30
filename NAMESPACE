@@ -1,0 +1,7 @@
+import(nlme)
+import(ecodist)
+importFrom("graphics", "axis", "legend", "lines", "mtext", "par","plot", "polygon")
+importFrom("stats", "dist", "formula", "na.omit", "residuals","update")
+## Export regular function names
+export(amod,arguSelect,colclass,levexp,lmeForm,modelFrame,moveYr,muleMan,ringApply,ringLme,rtimes,scacum,shiftFrame,splitFrame,tdForm,wlai)
+#exportPattern("^[[:alpha:]]+")
