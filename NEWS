@@ -1,0 +1,26 @@
+New changes in BIOdry V0.3:
+
+1. Changes in function "shiftFrame": Algorithm to shift ring-data
+   frames into multilevel data frames was changed to fix Internal
+   error message (R < 3.2.0). A new default argument "lev.nm =
+   c('plot','tree','sample')" was added to the function. This argument
+   provides names of the factor-level columns in the reshaped
+   multilevel data frames (see package documentation).
+ 
+2. Changes in function "muleMan": Output of this function is now a
+   "groupedData" object. Default plot in the output was removed. The
+   two default plot arguments: "plot.man = TRUE" and "psig = 0.05"
+   were also removed. Users of the package can plot the groupedData
+   object with other trellis-graph functions (see examples in the
+   function).
+
+
+
+
+
+
+
+
+
+
+

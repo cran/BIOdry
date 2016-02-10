@@ -4,7 +4,8 @@
 \title{Meteorological records of precipitation and temperature  
 }
 \description{Monthly precipitation sums and
-  average temperatures of two climatic locations. 
+  average temperatures of two climatic locations in the North of Spain (Soria)
+  and in the central portion of the country (Cuenca).  
 }
 \usage{data(PTclim05)}
 \format{

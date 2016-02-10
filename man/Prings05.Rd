@@ -1,11 +1,11 @@
 \name{Prings05}
 \docType{data}
 \alias{Prings05}
-\title{Multilevel dataset of P. pinaster
+\title{Multilevel dataset of Pinus pinaster
 }
 \description{Radial increments of Pinus pinaster from
- tow sample plots located on Northern and Southern portions of Ebro
- river basin, Spain. 
+ two sample plots located on the North of Spain (Soria) and on the central
+ portion of the country (Cuenca).
 }
 \usage{data(Prings05)}
 \format{
@@ -24,8 +24,8 @@ contains eight series of tree-ring widths of maritime
 pine (Pinus pinaster), with recorded years spanning from 1810
 to 2005. The cores were sampled
 from dominant trees of two sites, with sample plots being located on
-both: northern Spain (plot code: P44005) and center-east portion of
-the same country (plot code: P16106). Two trees were selected by plot,
+both: northern Spain (plot code: P44005) and central portion of
+the country (plot code: P16106). Two trees were selected by plot,
 and two core samples were extracted by tree. Consequently, the sample
 design defined three levels: sample in tree on plot (plot level),
 sample in tree (tree level), and sample level.
