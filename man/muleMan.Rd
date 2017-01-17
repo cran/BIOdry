@@ -1,22 +1,20 @@
 \name{muleMan}
 \alias{muleMan}
 \title{Multilevel correlograms}
-\description{Multilevel Mantel correlograms between two
-\code{\link{modelFrame}} objects.}
+\description{Mantel correlograms between two multilevel ecological data series
+(MEDS).}
 \usage{muleMan(rd, cd, rd.var = NULL, cd.var = NULL, ...)}
 \arguments{
-  \item{rd}{\code{list} or \code{dataframe}, such as that produced by
-\code{\link{modelFrame}}, containing the modeled tree
-growth.}
-  \item{cd}{\code{list} or \code{dataframe}, such as that produced by
-\code{\link{modelFrame}}, with correspondatn modeled aridity
-(see details).}
-  \item{rd.var}{\code{character}. Column name of the processed
-variable in code{rd}. If \code{NULL} then first
-column in \code{rd} is processed.}
-  \item{cd.var}{\code{character}. Column name of the processed
-variable in \code{cd}. If \code{NULL} then its
-first column is used.}
+  \item{rd}{\code{list} or \code{dataframe}. First multilevel ecological
+data series, or \code{\link{modelFrame}} object, to be compared.}
+  \item{cd}{\code{list} or \code{dataframe}. Second MEDS, or
+\code{\link{modelFrame}} object, to be compared.}
+  \item{rd.var}{\code{character} or \code{NULL}. Column name of
+first MEDS in \code{rd} argument. If \code{NULL}
+then the first column is processed.}
+  \item{cd.var}{\code{character} or \code{NULL}. Column name of
+second MEDS in \code{cd} argument. If \code{NULL}
+then the first column is used.}
   \item{\dots}{Further arguments in \code{\link{mgram}}}
 }
 \details{Function \code{\link{mgram}} in
@@ -25,10 +23,10 @@ compare two \code{\link{modelFrame}} objects,
 with the first object containing modeled
 fluctuations of tree growth, and the second one
 being the modeled fluctuations of
-aridity. Correspondant aridity model should
+aridity. Correspondent aridity model should
 have at least one level in common with the
 modeled tree growth (see example).}
-\value{Multilevel data frame (\code{\link{groupedData}} object) with computed
+\value{Multilevel ecological data series (\code{\link{groupedData}} object) with the 
 Mantel correlations.}
 \references{Lara W., F. Bravo,
 D. Maguire. 2013. Modeling patterns between
@@ -45,7 +43,7 @@ approach. Agric. For. Meteorol.,
 ## Fluctuations of tree growh and aridity are modeled and
 ## compared.
 
-##Multilevel data frame of tree-ring widths:
+##Multilevel ecological data series of tree-ring widths:
 data(Prings05,envir = environment())
 ## Radial increments measured on 2003:
 data(Pradii03,envir = environment())    

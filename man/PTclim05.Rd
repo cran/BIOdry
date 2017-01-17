@@ -1,23 +1,23 @@
 \name{PTclim05}
 \docType{data}
 \alias{PTclim05}
-\title{Meteorological records of precipitation and temperature  
+\title{MEDS of climate  
 }
 \description{Monthly precipitation sums and
-  average temperatures of two climatic locations in the North of Spain (Soria)
-  and in the central portion of the country (Cuenca).  
+  average temperatures of two climatic locations in northern (Soria)
+  and east-central Spain (Cuenca).  
 }
 \usage{data(PTclim05)}
 \format{
-      A data frame with the following 5 variables.
+      data frame with the following 5 variables.
     \describe{
-      \item{\code{pr}}{A numeric vector with the monthly precipitation
-	sums measured in mm month-1}
-      \item{\code{tm}}{A numeric vector with the monthly mean temperatures
-	measured in degree C month-1}      
-      \item{\code{month}}{A numeric vector with the recorded month}
-      \item{\code{year}}{A numeric vector with the recorded year}
-      \item{\code{plot}}{A factor indicating the code of a correspondant dendrochronological plot}
+      \item{\code{pr}}{numeric vector of monthly precipitation
+	sums (mm month-1)}
+      \item{\code{tm}}{numeric vector of monthly mean temperatures
+	(degree C month-1)}      
+      \item{\code{month}}{numeric vector of recorded months}
+      \item{\code{year}}{numeric vector of recorded years}
+      \item{\code{plot}}{ecological factor indicating correspondent dendrochronological plot}
       }
 }
 

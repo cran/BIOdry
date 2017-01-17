@@ -1,27 +1,22 @@
-modelFrame <- structure(function #MEDS modeling 
-### This function develops recursive modeling and/or LME detrending of
-### multilevel ecological data series (MEDS).
-                        ##details<< Diverse one-level functions are
-                        ##recursively implemented. Processed MEDS can
-                        ##also be detrended with \code{\link{lme}}
-                        ##models and other \code{\link{nlme}}
-                        ##methods. Default arguments produce modeling
-                        ##of tree growth from dendrochonological MEDS
+modelFrame <- structure(function #Recursive modeling of multilevel
+                                 #dendrochronological data sets.
+###Diverse one-level functions, which are available in this package to
+###process dendrochronological data sets, can be recursively
+###implemented, and the derived tree-ring variables can be detrended
+###via multilevel modeling.
+                        ##details<< Default arguments produce modeling
+                        ##of tree growth from dendrochonological data
                         ##with recursive implementation of
                         ##\code{\link{rtimes}}, \code{\link{scacum}},
                         ##\code{\link{amod}}, and
-                        ##\code{\link{frametoLme}}
-                        ##functions. Nevertheless, other functions can
-                        ##be implemented (see example with climatic
-                        ##data). Internal algorithm uses
-                        ##\code{\link{arguSelect}} and
-                        ##\code{\link{ringApply}}
-                        ##functions. Consequently, arguments not to be
-                        ##vectorized should be specified in 'MoreArgs'
-                        ##lists (see example). Objects of type
-                        ##\code{modelFrame} can further be modified
-                        ##with \code{\link{update}} function.
-
+                        ##\code{\link{frametoLme}}. Nevertheless,
+                        ##other functions can also be implemented (see
+                        ##example with climatic data). Internal
+                        ##algorithm uses \code{\link{arguSelect}} and
+                        ##\code{\link{ringApply}}. Consequently,
+                        ##arguments not to be vectorized should be
+                        ##specified in a 'MoreArgs' list (see
+                        ##example).
                         ##references<< Lara W., F. Bravo,
                         ##D. Maguire. 2013. Modeling patterns between
                         ##drought and tree biomass growth from
@@ -29,11 +24,10 @@ modelFrame <- structure(function #MEDS modeling
                         ##approach. Agric. For. Meteorol.,
                         ##178-179:140-151.
 (
-    rd, ##<<\code{data.frame}. Multilevel ecological data series.
-    lv = list(2,1,1), ##<< List of \code{numeric} positions in the
-                      ##factor-level columns of the processed MEDS to
-                      ##implement the one-level functions, or
-                      ##\code{character} names of the factor-level
+    rd, ##<<\code{data.frame} object with factor-level columns.
+    lv = list(2,1,1), ##<<List of \code{numeric} positions in the
+                      ##factor-level columns to implement one-level
+                      ##functions, or \code{character} names of such
                       ##columns.
     fn = list('rtimes','scacum','amod'), ##<< List of \code{character}
                                          ##names of the one-level
@@ -44,11 +38,12 @@ modelFrame <- structure(function #MEDS modeling
                  ##methods are available: 'lmeForm' or 'tdForm'. These
                  ##methods implement functions with the same names
                  ##(see \code{\link{lmeForm}} and
-                 ##\code{\link{tdForm}}). If \code{NULL} then the lme
+                 ##\code{\link{tdForm}}). If \code{NULL} then such a
                  ##modeling is not developed.
-    ... ##<< Further arguments to be evaluated by one-level or
-        ##\code{\link{lme}} functions (see details).
-) {
+    ... ##<< Further arguments to be evaluated by functions in
+        ##\code{fn} or by \code{\link{lme}} (see details).
+)
+{
     
     ar <- list()
     mln <- min(sapply(list(lv,fn),length))
@@ -64,9 +59,10 @@ modelFrame <- structure(function #MEDS modeling
         rd <- do.call(frametoLme,ar)
         rd[['call']] <- sys.call()}
     return(rd)
-###Depending on the \code{form} argument, either MEDS or
+###Depending on \code{form}, either data frame, or fitted
 ###\code{\link{lme}} object.
-} , ex=function() {
+} ,
+ex=function() {
     
     ##Multilevel data frame of tree-ring widths:
     data(Prings05,envir = environment())

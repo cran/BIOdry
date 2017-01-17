@@ -1,14 +1,9 @@
-rtimes <- structure(function#Time-units synchronization
-### Unique observations in time-series replicates are excluded
-                    ## details<<This function is used to enhance
-                    ## convergence of mixed-effects parameters during
-                    ## detrending processes of multilevel ecological
-                    ## data series (see \code{\link{modelFrame}}
-                    ## function).
+rtimes <- structure(function#Relative times
+### Relative times from 1 to the number of observed years are computed. Duplicated times can be sinchronized by replacing unique values with NA.   
 (
-    x, ##<< multilevel ecological data series containing a column of
-       ##time units, or \code{numeric} vector with names representing
-       ##the time units.
+    x, ##<< \code{numeric} vector with names representing the
+       ##formation years, or multilevel data frame containing a column
+       ##of years.
     only.dup = TRUE ##<< \code{logical}. Extract only duplicated
                     ##times.  If TRUE then unique times are replaced
                     ##with NA. If all computed times are unique then
@@ -18,7 +13,7 @@ rtimes <- structure(function#Time-units synchronization
     if(is.data.frame(x)){
         csnu <- colclass(x,T)[['num']]
         csn <- c(colclass(x,T)[
-            c('tmp','fac')],recursive = T)
+                             c('tmp','fac')],recursive = T)
         csn. <- length(csn)!=0
         csn.. <- csn[!csn%in%'time']
         cd <- x
@@ -41,8 +36,7 @@ rtimes <- structure(function#Time-units synchronization
     if(csn.)
         da <- cbind(da,cd[,csn..])
     return(da)
-### \code{data.frame} object with the initial vector and its time
-### units.
+### \code{data.frame} object with the initial vector and its formation times.
 } , ex=function(){
     ## row names of a vector
     fy <- function(y,span){(y - span):y}
@@ -50,7 +44,7 @@ rtimes <- structure(function#Time-units synchronization
     ## (not run) Simulating the vector
     r <- abs(rnorm(length(x)))
     names(r) <- x
-    ## (not run) computing the synchronized times:
+    ## (not run) computing relative times:
     rtimes(r,only.dup = TRUE)        
     ## (not run) Extracting only duplicated times:
     na.omit(rtimes(r,only.dup = TRUE))

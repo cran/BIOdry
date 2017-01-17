@@ -1,18 +1,23 @@
 \name{scacum}
 \alias{scacum}
-\title{Scaled-cummulative sums}
-\description{Cummulative sums of a vector are scaled on a constant value. }
+\title{Cummulative-scaled sums}
+\description{This function computes cummulative sums of time-series replicates.}
 \usage{scacum(x, y = NA, z = NA)}
 \arguments{
-  \item{x}{\code{numeric} vector with vector names being ordered on time}
-  \item{y}{\code{NA} or \code{numeric} constant to scale the
-vector.  If \code{NA} then the cummulative sums
-are not scaled.}
-  \item{z}{\code{NA} or \code{numeric} constant in range of
-the vector names. If NA then maximun value in such a
-range is used.}
+  \item{x}{\code{numeric} vector of time-series replicates with names
+of the vector being time units.}
+  \item{y}{constant, or vector if the processed time-series
+replicates have several levels, to scale the
+computed cumulative values.  If NA then the
+computed cumulative sums are not scaled.}
+  \item{z}{\code{NA}, or \code{numeric} constant. Reference
+time(s) in range(s) of the vector names to scale the
+cumulative values. If NA then maximum value in the
+time-units range is used.}
 }
-\details{Cummulative values of the numeric vector are computed with \code{\link{cumsum}} }
+\details{Cummulative sums of time-series replicates
+(e.g. tree-radial increments) are scaled on reference constants
+(e.g. individual tree diameters).}
 \value{data frame with the original vector, and its scaled-cummulative sums.}
 
 \author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}

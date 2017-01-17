@@ -1,12 +1,10 @@
 colclass <- structure(function#Column classes
-### Column names of multilevel ecological data sets are grouped into
-### three classes: \code{numeric}, time unit,
-### or \code{factor}.
+### Column names in multilevel data frames are grouped into classes according to three level types: \code{numeric}, temporal, or \code{factor}. 
 (
-    rd, ##<<\code{data.frame}. Multilevel ecological data series.
+    rd, ##<<\code{data.frame} object with factor-level columns.
     as.list = TRUE ##<<\code{logical}. List the classes. If
-                   ##\code{TRUE} then column names of the data are grouped
-                   ##in a list object.
+                   ##\code{TRUE} then column names in data are
+                   ##grouped in the form of a list.
 ) {
     
     tim <- c('second','hour','day','week',
@@ -27,10 +25,10 @@ colclass <- structure(function#Column classes
     
     
     return(orv)
-### \code{character} vector of the column names, or \code{list} of
-### grouped column names.
+### \code{character} vector of the column names, or \code{list} of grouped
+### column names.
 } , ex=function() {
-    ##Multilevel ecological data series of tree-ring widths:
+    ##Multilevel data frame of tree-ring widths:
     data(Prings05,envir = environment())
     ## getting grouped column names    
     classes <- colclass(Prings05)

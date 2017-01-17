@@ -1,13 +1,15 @@
 \name{levexp}
 \alias{levexp}
 \title{Vector releveling}
-\description{Expansion or reduction of a numeric vector by matching its levels with the factor-level columns in a data frame.}
+\description{Expansion or reduction of a numeric vector by matching its level names
+with the ecological factors of a multilevel ecological data
+series.}
 \usage{levexp(x, levels)}
 \arguments{
   \item{x}{\code{numeric} vector with names of the vector representing
 the levels to be matched.}
-  \item{levels}{\code{data.frame} with factor-level columns, or
-\code{character} vector of levels.}
+  \item{levels}{\code{data.frame}. Multilevel ecological data series,
+or \code{character} vector of levels.}
 }
 
 \value{numeric vector with expanded/reduced levels.}
@@ -18,14 +20,14 @@ the levels to be matched.}
 
 
 \examples{
-##Multilevel data frame of tree-ring widths:
+##Multilevel ecological data series of tree-ring widths:
 data(Prings05,envir = environment())
-## Radial increments measured on 2003:
+## Tree-radial increments measured at 2003:
 data(Pradii03,envir = environment())    
 
-## Getting the factor-level names at sample level
+## Getting levels in 'sample' factor of the Prings05 object.
 ntl <- names(splitFrame(Prings05,'sample'))
-## Releveling the radii
+## Releveling the tree radii
 refs <- levexp(Pradii03,ntl)
 
 }

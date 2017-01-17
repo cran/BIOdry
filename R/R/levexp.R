@@ -1,12 +1,10 @@
 levexp <- structure(function# Vector releveling
-### Expansion or reduction of a numeric vector by matching its level names
-### with the ecological factors of a multilevel ecological data
-### series.
+### Expansion or reduction of a numeric vector by matching its levels with the factor-level columns in a data frame.
 (
     x, ##<<\code{numeric} vector with names of the vector representing
        ##the levels to be matched.
-    levels ##<<\code{data.frame}. Multilevel ecological data series,
-           ##or \code{character} vector of levels.
+    levels ##<<\code{data.frame} with factor-level columns, or
+           ##\code{character} vector of levels.
 ) {
     tx <- split(x,names(x))
     if(is.character(levels))
@@ -34,14 +32,14 @@ levexp <- structure(function# Vector releveling
     return(nmd1)
 ### numeric vector with expanded/reduced levels.
 } , ex=function(){
-    ##Multilevel ecological data series of tree-ring widths:
+    ##Multilevel data frame of tree-ring widths:
     data(Prings05,envir = environment())
-    ## Tree-radial increments measured at 2003:
+    ## Radial increments measured on 2003:
     data(Pradii03,envir = environment())    
     
-    ## Getting levels in 'sample' factor of the Prings05 object.
+    ## Getting the factor-level names at sample level
     ntl <- names(splitFrame(Prings05,'sample'))
-    ## Releveling the tree radii
+    ## Releveling the radii
     refs <- levexp(Pradii03,ntl)
     
 })

@@ -1,19 +1,14 @@
 arguSelect <- structure(function#Argument selection
-###Arguments of specific functions are selected from arbitrary numbers
-###and varieties of arguments.
-                     ##details<<Closures with ellipsis terms use this
-                     ## function to extract and pass arguments to
-                     ## other functions. Arguments in \code{MoreArgs}
-                     ## lists are also extracted.
+###Getting arguments in function(s).                        
+##details<< This function is implemented by \code{\link{ringApply}} to model multilevel data in \code{rd}. But, the function may also be used for other purposes.  
 (
-    rd = NULL, ##<<\code{NULL} or \code{data.frame}. Multilevel
-               ##ecological data series. If \code{NULL} then this
-               ##argument is ignored.
-    fun = c('mapply','ringApply'), ##<< \code{character} or
-                                   ##\code{NULL}. Vector of function
-                                   ##names.
-    ... ##<< Further arguments not necessarily contained in the
-        ##processed function(s).
+    rd = NULL, ##<<\code{NULL} or \code{data.frame} object with
+               ##factor-level columns (see details).
+    fun = c('mapply','ringApply'), ##<<\code{character} vector with
+    ## name(s) of formulated functions.
+    ... ##<< Further arguments not necessarily required by formulated
+        ##function(s). Arguments in \code{MoreArgs} lists are also
+        ##processed.
 ) {
     mx <- list(...)
     
@@ -36,15 +31,15 @@ arguSelect <- structure(function#Argument selection
     if(is.data.frame(rd))
         sel[['rd']] <- rd
     return(sel)
-### \code{list} of selected arguments.
+### \code{list} of arguments.
 } , ex=function() {
     
-    ##Multilevel ecological data series of tree-ring widths:
+    ##Multilevel data frame of tree-ring widths:
     data(Prings05,envir = environment())
     ## Radial increments measured on 2003:
     data(Pradii03,envir = environment())    
-    
-    ## Selection of arguments in some functions:
+
+    ## getting arguments in some functions:
     ar1 <- arguSelect(fun = c('amod'),
                       only.dup = TRUE,mp = c(0.5,1),z = 2003)
     str(ar1)

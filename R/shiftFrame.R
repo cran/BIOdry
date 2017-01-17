@@ -1,39 +1,37 @@
-shiftFrame <- structure(function#Shifting of ring-data frames
-### Ring-data frames are reshaped into multilevel data frames (or vice
-### versa). SI units of the processed chronologies can be changed.
-                        ##details<<Rows of ring-data frames should be
-                        ##named with chronological years, and columns
-                        ##of such data frames should be labeled with
-                        ##level units defined by sample design. Level
-                        ##units in labels are separated with dot (.),
-                        ##beginning with names of higher level units
-                        ##(i.e. ecorregion, climatic location, or
-                        ##plot) and ending with the lowest level unit
-                        ##(usually sample/replicate). For example, the
-                        ##code name of core 'a' in tree '2' on plot
-                        ##'P16001' on ecorregion 'M1' will have the
-                        ##name: 'M1.P16001.2.a'.
+shiftFrame <- structure(function#MEDS formatting
+### Ring-data frames (e.g. \code{dplR} chronologies) are formatted into
+### multilevel ecological data series (or vice versa). 
+                        ##details<< Correct formatting of ring-data
+                        ##frames requires their row names to be
+                        ##time-units labels (e.g. years). The column
+                        ##names should be dot-separated labels
+                        ##representing the hierarchy of ecological
+                        ##factors, where the higher levels are defined
+                        ##first and the lower levels after. For
+                        ##example, code 'P16106.17' is the column name
+                        ##of tree '17' in plot 'P16106'. SI units of
+                        ##the processed chronologies can also be
+                        ##changed.
+                        
 (
     rd, ##<<\code{data.frame}. Ring-data frame (see details), or
-        ##multilevel data frame (see value).
+        ##multilevel ecological data series (MEDS).
     lev.nm = c('plot','tree','sample'), ##<<for the case of ring-data
-                                        ## frames, \code{character}
-                                        ## vector with names of the
-                                        ## factor-level columns in the
-                                        ## final multilevel data
-                                        ## frame, beginning with name
-                                        ## of the highest level column
-                                        ## and ending with the name of
-                                        ## the lowest level column. If
-                                        ## \code{rd} is a multilevel
-                                        ## data frame then this
-                                        ## argument is ignored.
-    which.x = NULL, ##<<for the case of multilevel data frames,
-                    ##\code{character} name of the column to be
-                    ##reshaped into a ring-data frame. If NULL then
-                    ##the first \code{numeric} column is processed. If
-                    ##\code{rd} is a ring-data frame then this
-                    ##argument is ignored.
+                                        ##frames, \code{character}
+                                        ##vector with names of the
+                                        ##factor-level columns in the
+                                        ##final MEDS, beginning with
+                                        ##name of the highest level
+                                        ##column and ending with name
+                                        ##of the lowest level
+                                        ##column. If \code{rd} is a
+                                        ##MEDS then this argument is
+                                        ##ignored.
+    which.x = NULL, ##<<for the case of MEDS, \code{character} name of
+                    ##the column to be reshaped into a ring-data
+                    ##frame. If NULL then the first \code{numeric}
+                    ##column is processed. If \code{rd} is a ring-data
+                    ##frame then this argument is ignored.
     un = NULL ##<< \code{NULL}, one, or two \code{character} names of
               ##SI units to record/transform the processed
               ##variables. One character records metric system; two
@@ -99,21 +97,18 @@ shiftFrame <- structure(function#Shifting of ring-data frames
     
     attributes(dt)[['un']] <- un[lu]
     return(dt)
-### If \code{rd} is a ring-data frame then output is a multilevel data
-### frame with the reshaped variable in the first column and years on
-### the second one, followed by factor-level columns from the column
-### with the lowest level units (sample/replicate) to the column with
-### the higest possible level units. If \code{rd} is a multilevel data
-### frame then the output is a ring-data frame (see details).
+### If \code{rd} is a ring-data frame then output is a MEDS. If
+### \code{rd} is a MEDS then the output is a ring-data frame (see
+### details).
 } , ex=function(){
-    ##Multilevel data frame of tree-ring widths:
+    ##tree-ring MEDS:
     data(Prings05,envir = environment())
     
-    ## Reshaping multilevel data into a ring-data frame:
+    ## Formatting the MEDS into a ring-data frame:
     pwide <- shiftFrame(Prings05)
     str(pwide)
-    ## Reshaping the ring-data frame into the initial multilevel data,
-    ## and defining SI units:
-    plong <- shiftFrame(pwide,un = 'mmm')
+    ## Formatting the ring-data frame into a MEDS, and changing SI
+    ## units of the rings from milimeters to micrometers:
+    plong <- shiftFrame(pwide,un = c('mm','mmm'))
     str(plong)
 })

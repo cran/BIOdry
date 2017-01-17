@@ -1,21 +1,18 @@
-tdForm <- structure(function#ltd formulas
-### This function formulates linear time-decline formulas (ltd) from
-### multilevel ecological data series.
-                    ##details<< the ltd formulas belong to following
-                    ##general equation: log (x) = log (cs) + f(t);
-                    ##where the relative organic growth (x) are
-                    ##explained by the cumulative organic growth (cs)
-                    ##plus a function of time f(t); with f(t) being
-                    ##either the time or a logarithmic transformation
-                    ##the time. The ltd can be implemented by
-                    ##\code{\link{modelFrame}} function to detrend
-                    ##organic MEDS
-
-                    ##references<< Zeide B. 1993. Analysis of Growth
+tdForm <- structure(function#Time-decline formula
+### LME formulas of type time-decline (td) or log-time-decline (ltd).
+                    ##details<< (L)td formulas belongs to general
+                    ##equation: log (cs) = log (x) + f(t); where the
+                    ##cummulative radial increments (cs) are explained
+                    ##by the observed radial increments (x) plus a
+                    ##function of time f(t); with f(t) being either
+                    ##the time or a logarithmic transformation the
+                    ##time (ltd).  references<< Zeide
+                    ##B. 1993. Analysis of Growth
                     ##Equations. For. Sci., 39: 594-616.
 (
-    rd, ##<<\code{data.frame} or \code{character} vector. Multilevel
-        ##ecological data series or vector of ecological factors.
+    rd, ##<<\code{data.frame} object with factor-level columns, or
+        ##\code{character} vector with names of factor-level columns
+        ##which are decreasingly ordered.
     prim.cov = FALSE, ##<<\code{logical}. Print a primary covariate
                       ##form: '~ cov'. If FALSE then a complete
                       ##formula: 'resp ~ cov | group' is printed.
@@ -23,10 +20,11 @@ tdForm <- structure(function#ltd formulas
                     ##\code{\link{rtimes}}). If FALSE then t = 'year'.
     log.t = FALSE, ##<< \code{logical}. If TRUE then \code{f(t) =
                    ##ln(t)}. Default FALSE produces a td form
-    lev.rm = NULL ##<< NULL or \code{character} name of the ecological
-                  ##factor(s) in the MEDS to be removed from the
+    lev.rm = NULL ##<< NULL or \code{character} name of the
+                  ##factor-level column to be removed from the
                   ##formula.
-) {   
+)
+{   
     rs <- 'log(x)'; lx <- '~ log(csx) +'; 
     t <- 'time'
     if(!on.time)t <- 'year'
@@ -34,8 +32,8 @@ tdForm <- structure(function#ltd formulas
     ftt <- paste(rs,lx,t,sep = ' ')
     if(!is.character(rd)){
         f <- colclass(rd,TRUE)[['fac']]
-        if(is.numeric(lev.rm))
-            lev.rm <- f[lev.rm]
+            if(is.numeric(lev.rm))
+        lev.rm <- f[lev.rm]
         nf <- rev(f[!f%in%lev.rm])}
     if(is.character(rd))
         nf <- rd[!rd%in%lev.rm]
@@ -48,7 +46,8 @@ tdForm <- structure(function#ltd formulas
         fr <- paste(lx,t,sep = '')
     return(formula (fr))
 ### \code{formula} with the forms: 'resp ~ cov | group' or '~ cov'.
-} , ex=function(){
+} ,
+ex=function(){
     ## an ltd formula:
     lev <- c('plot','tree')
     tdeq <- tdForm(lev,log.t = TRUE)

@@ -1,21 +1,9 @@
 wlai <- structure(function#Walter-Lieth aridity index
 ### Computing the annual aridity index from Walter-Lieth climate diagrams 
-                  ##details<<Areas between temperature and
-                  ##precipitation lines when precipitation exceeds
-                  ##temperature are calculated as indicators of moist
-                  ##seasons, and areas where temperature exceeds
-                  ##precipitation are calculated as indicator of dry
-                  ##season. The aridity index is defined as the
-                  ##quotient between the areas of dry and wet
-                  ##seasons. Those precipitations over 100 mm are
-                  ##scaled such that 1 degree C is equal to 5 mm.
-
-                  ##references<< Manrique E.,
-                  ##A. Fernandez-Cancio. 2000. Extreme climatic events
-                  ##in dendroclimatic reconstructions from
-                  ##Spain. Clim. Chang., 44: 123-138.
+##details<<Areas between temperature and precipitation lines when precipitation exceeds temperature are calculated as indicators of moist seasons, and areas where temperature exceeds precipitation are calculated as indicator of dry season. The aridity index is defined as the quotient between the areas of dry and wet seasons. Those precipitations over 100 mm are scaled such that 1 degree C is equal to 5 mm.
+##references<< Manrique E., A. Fernandez-Cancio. 2000. Extreme climatic events in dendroclimatic reconstructions from Spain. Clim. Chang., 44: 123-138.                  
 (
-    cd,##<< \code{data.frame}. Multilevel climatic data series of
+    cd,##<< \code{data.frame} object with annual climatic records of
        ##monthly precipitation sums (mm), and monthly average
        ##temperatures (degree C), with row names being monthly
        ##characters in \code{\link{month.abb}} or
@@ -25,14 +13,14 @@ wlai <- structure(function#Walter-Lieth aridity index
                 ##is normalized with a square root transformation.
     fig = FALSE, ##<<\code{logical}. Plot the Walter-Lieth diagram.
     ... ##<< Further arguments to be passed to \code{\link{plot}}
-)
-{
+) {
     AI <- NA
     
     csn <- c(colclass(cd,T)[
-        c('tmp','fac')],recursive = T)
+                         c('tmp','fac')],recursive = T)
     csn. <- length(csn)!=0
-        
+    
+    
     pr <- cd[,1];tm <- cd[,2]
     min.length <- length(pr) >= 12
     if(min.length){
@@ -102,7 +90,8 @@ wlai <- structure(function#Walter-Lieth aridity index
     
     if(csn.)
         AI <- unique(cbind(AI,cd[,csn[-1L]]))
-        
+    
+    
     if(fig&min.length){
         ##color palette
         col. <- paste('gray',c(70,60,30), sep = '')
@@ -136,7 +125,8 @@ wlai <- structure(function#Walter-Lieth aridity index
     return(AI)                
 ### \code{numeric} aridity index and plot of the Walter-Lieth diagram.
 } ,
-ex=function() {
+ex=function()
+{
     ##random simulation of climatic records
     set.seed(1)
     pr <- rnorm(12,1,1)

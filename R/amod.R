@@ -1,26 +1,47 @@
 amod <- structure(function#Allometric modeling
-### Parameters in simple allometric model are evaluated on tree radial increments to compute diameters, basal areas, tree biomasses, etc.
-##details<<The simple allometric model has the form: a * cs ^ b, with a,b being constants in \code{mp}, and cs being scaled-cummulative sums.  Different dendrometric variables can be computed; for example, \code{c(1,1)} produces diameters, and \code{c(0.25 * pi,2)} computes basal areas. Argument \code{mp} can have more than two parameters: \code{c(a1,b1,a2,b2, ..., an,bn)}, with \code{n} being the number of times that allometric model will be recursively implemented. Such recursive evaluation is useful to derive variables which depend on other allometric covariables: i.e allometric model would be implemented twice to recursively compute diameters and tree biomasses. A column of increments of cs (x) is also computed by implementing \code{\link{setdiff}}. 
+### Parameters of simple allometric model are evaluated to derive
+### allometric components of organisms from longitudinal variables.
+                  ##details<<The simple allometric model has the form:
+                  ##a * cs ^ b, with a,b being constants in \code{mp},
+                  ##and cs being a sequence of mesures of an organic
+                  ##component (e.g. the tree-radial increments).
+                  ##Different allometric variables can be computed;
+                  ##for the case of tree-radial increments, \code{mp =
+                  ##c(1,1)} produces diameters, and \code{mp = c(0.25
+                  ##* pi,2)} computes basal areas. The argument
+                  ##\code{mp} can have more than two parameters:
+                  ##\code{c(a1,b1,a2,b2, ..., an,bn)}, with \code{n}
+                  ##being the number of times that allometric model
+                  ##will be recursively implemented. Such recursive
+                  ##evaluation is useful to derive variables which
+                  ##depend on other allometric covariables: i.e
+                  ##allometric model would be implemented twice to
+                  ##recursively compute diameters and tree biomasses
+                  ##from tree-ring widths. A column of increments of
+                  ##cs (x) is also computed for further in-package
+                  ##modeling of relative organic growth from
+                  ##cumulative organic growth (see
+                  ##\code{\link{tdForm}} function).
 (
     
-    cs, ##<<\code{Numeric} vector of scaled-cummulative sums such as
-    ##that produced by \code{\link{scacum}}.
+    cs, ##<<\code{Numeric}. Sequence of mesures of an organic
+        ##component.
     mp = c(0.5,1), ##<<\code{Numeric}. vector with allometric
-    ##parameters. Default \code{c(0.5,1)} maintains the
-    ##original radii (see details for other variables)
+                   ##parameters. Default \code{c(0.5,1)} maintains the
+                   ##original radii (see details for other variables)
     un = NULL ##<< NULL, or bidimensional \code{character} vector to
-    ##transform SI units of the processed variable. The SI
-    ##units can be expressed in micrometers 'mmm',
-    ##milimeters 'mm', centimeters 'cm', decimeters 'dm', or
-    ##meters 'm'. If NULL then original units are
-    ##maintained.
+              ##transform SI units of the processed variables. The SI
+              ##units can be expressed in micrometers 'mmm',
+              ##milimeters 'mm', centimeters 'cm', decimeters 'dm', or
+              ##meters 'm'. If NULL then original units are
+              ##maintained.
 ) {
     
     csn. <- FALSE
     if(is.data.frame(cs)){
         csnu <- colclass(cs,T)[['num']]
         csn <- c(colclass(cs,T)[
-                             c('tmp','fac')],recursive = T)
+            c('tmp','fac')],recursive = T)
         csn. <- length(csn)!=0
         csn.. <- csn[!csn%in%c('x','csx')]
         cd <- cs
@@ -39,36 +60,36 @@ amod <- structure(function#Allometric modeling
     x <- 2 * cs #diameters
     if(length(un) > 1)
         x <- x * chun(un[1],un[2])
-    
-    fp <- function(x){
-        cn <- c(TRUE,FALSE)
-        l <- list(a = x[cn],b = x[rev(cn)])
-        return(l)}
-    
-    x0 <- x
-    arg <- list()
-    for(i in 1:length(fp(mp)[['a']])){
-        arg[[i]] <- c(fp(mp)[['a']][i],
-                      fp(mp)[['b']][i])
-        x0 <- do.call(allm,list(x0,
-                                arg[[i]][1],arg[[i]][2]))}
-    
-    x1 <- c(NA,diff(x0))
-    names(x1) <- names(x)
-    xd <- data.frame(x = x1,csx = x0)
-    
-    if(csn.&& length(csnu) > 1){
-        xd <- cd[,csnu]
-        xd[,'x'] <- x1
-        xd[,'csx'] <- x0 }
-    if(csn.)
-        xd <- cbind(xd,cd[,csn..])
-    
-    return(xd)
-### \code{data.frame} object.
-    
-} ,
-ex=function() {
+        
+        fp <- function(x){
+            cn <- c(TRUE,FALSE)
+            l <- list(a = x[cn],b = x[rev(cn)])
+            return(l)}
+        
+        x0 <- x
+        arg <- list()
+        for(i in 1:length(fp(mp)[['a']])){
+            arg[[i]] <- c(fp(mp)[['a']][i],
+                          fp(mp)[['b']][i])
+            x0 <- do.call(allm,list(x0,
+                                    arg[[i]][1],arg[[i]][2]))}
+        
+        x1 <- c(NA,diff(x0))
+        names(x1) <- names(x)
+        xd <- data.frame(x = x1,csx = x0)
+        
+        if(csn.&& length(csnu) > 1){
+            xd <- cd[,csnu]
+            xd[,'x'] <- x1
+            xd[,'csx'] <- x0 }
+        if(csn.)
+            xd <- cbind(xd,cd[,csn..])
+            
+            return(xd)
+### \code{data.frame} of computed allometric-organic components and
+### their correspondent relative increments.
+            
+} , ex=function() {
     ## radial increments
     set.seed(1)
     w <- abs(rnorm(12,1,1))
