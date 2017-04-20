@@ -16,9 +16,8 @@ rtimes <- structure(function#Time-units synchronization
 ) {
     csn. <- FALSE
     if(is.data.frame(x)){
-        csnu <- colclass(x,T)[['num']]
-        csn <- c(colclass(x,T)[
-            c('tmp','fac')],recursive = T)
+        csnu <- cClass(x, 'numeric')
+    csn <- c(cClass(x, 'integer'), cClass(x, 'factor'))
         csn. <- length(csn)!=0
         csn.. <- csn[!csn%in%'time']
         cd <- x

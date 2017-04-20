@@ -21,15 +21,14 @@ frametoLme <- structure(function# LME modeling
                         ##and S-PLUS. Springer, New York.
 (
     rd, ##<<\code{data.frame}. Multilevel ecological data series.
-    form = 'lmeForm', ##<<\code{character}. Name of a lme method
-                      ##. Available methods are 'lmeForm' and 'tdForm'
-                      ##(see details).
+    form = 'lmeForm', ##<<\code{character}. Any of two lme formulas:
+                      ##'lmeForm' and 'tdForm' (see details).
     res.data =TRUE, ##<< \code{logical}. Save residuals as a
                     ##multilevel ecological data series. If TRUE then
-                    ##a data frame of name 'resid' is added to output
+                    ##a data frame of name 'fluc' is added to output
                     ##list.
-    ... ##<< Further arguments to be passed to \code{\link{lme}} funtion or to
-        ##the lme method in \code{form}.
+    ... ##<< Further arguments to be passed to \code{\link{lme}}
+        ##function or to the lme formula in \code{form}.
 ) {
     pr.cov <- function(form){
         chf <- Reduce(paste,deparse(form))
@@ -59,8 +58,8 @@ frametoLme <- structure(function# LME modeling
     mem <- list(model = mem.,call = sys.call())
     rset <- function(r.model){
         md <- r.model[['data']]
-        tim <- colclass(md)[['tmp']]
-        lev <- colclass(md)[['fac']]
+        tim <- cClass(md, 'integer')
+        lev <- cClass(md, 'factor')
         lg <- ncol(data.frame(getGroups(md)))
         dcum <- residuals(r.model,level = lg:1,type = 'p')
         dcum <- as.data.frame(dcum)
@@ -71,11 +70,13 @@ frametoLme <- structure(function# LME modeling
                       by = 'row.names', all.x = TRUE,sort = FALSE)
         dres <- dres[,c(names(dcum),tim,lev)]
         return(dres)}
-    if(res.data)
-        mem[['resid']] <- rset(mem.)
+    if(res.data){
+            residu <- rset(mem.)
+        mem[['fluc']] <- groupedData(lmeForm(residu),data=residu)
+        }
+            ## mem[['resid']] <- rset(mem.)
     return(mem)
-### Depending on the \code{res.data} argument, either an LME model or a
-### \code{list} with both: the LME model and a MEDS of residuals
+### \code{\link{groupedData}} object.
 } , ex=function() {
     
     ##Multilevel data frame of tree-ring widths:
@@ -85,24 +86,22 @@ frametoLme <- structure(function# LME modeling
     ## Monthly precipitation sums and average temperatures:
     data(PTclim05,envir = environment())
     
-    ##Modeling tree growth:
+    ##Modeling TRW fluctuations:
     mpin <- modelFrame(Prings05,
-                       y = Pradii03,
-                       form = NULL,# on.time = TRUE,
-                       MoreArgs = list(only.dup = TRUE,
-                                       mp = c(1,1),
-                                       un = c('mm','cm'),
-                                       z = 2003))
+                       sc.c = Pradii03,
+                       rf.t = 2003)
     
-    ## Detrending the tree-growth MEDS with a (l)td-form model:
-    rlme <- frametoLme(mpin,
+    ## Detrending the TRW fluctuations by fitting a (l)td-form model
+    ## with Maximum-likelihood method (ML):
+    pdata <- mpin$'model'$'data'
+    rlme <- frametoLme(pdata,
                        form = 'tdForm',
                        method = 'ML',
                        log.t = TRUE)
     summary(rlme$model)
     
     ##a plot of the modeled fluctuations
-    d <- groupedData(lmeForm(rlme$resid,lev.rm = 1),data = rlme$resid)
+    d <- groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
     plot(d,groups = ~ sample,auto.key = TRUE)
     
     ## A model of aridity: 
@@ -113,10 +112,10 @@ frametoLme <- structure(function# LME modeling
     summary(cf)
     
     ## An lme model of aridity at 'plot' level:
-    rmod <- frametoLme(cf,form = 'lmeForm')
+    cdata <- cf$'model'$'data'
+    rmod <- frametoLme(cdata,form = 'lmeForm')
     summary(rmod$model)
     
-    rk <- groupedData(lmeForm(rmod$resid),data=rmod$resid)
+    rk <- groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
     plot(rk,ylab = 'detrended AI')
-    
 })

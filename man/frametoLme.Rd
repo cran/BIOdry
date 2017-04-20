@@ -5,15 +5,14 @@
 \usage{frametoLme(rd, form = "lmeForm", res.data = TRUE, ...)}
 \arguments{
   \item{rd}{\code{data.frame}. Multilevel ecological data series.}
-  \item{form}{\code{character}. Name of a lme method
-. Available methods are 'lmeForm' and 'tdForm'
-(see details).}
+  \item{form}{\code{character}. Any of two lme formulas:
+'lmeForm' and 'tdForm' (see details).}
   \item{res.data}{\code{logical}. Save residuals as a
 multilevel ecological data series. If TRUE then
-a data frame of name 'resid' is added to output
+a data frame of name 'fluc' is added to output
 list.}
-  \item{\dots}{Further arguments to be passed to \code{\link{lme}} funtion or to
-the lme method in \code{form}.}
+  \item{\dots}{Further arguments to be passed to \code{\link{lme}}
+function or to the lme formula in \code{form}.}
 }
 \details{This function implements
 \code{\link{lme}} function to fit linear
@@ -30,8 +29,7 @@ any of these two functions. After the lme
 models are fitted, they can be extended by
 implementing methods in \code{\link{nlme}}
 package.}
-\value{Depending on the \code{res.data} argument, either an LME model or a
-\code{list} with both: the LME model and a MEDS of residuals}
+\value{\code{\link{groupedData}} object.}
 \references{Pinheiro J. C.,
 D. M. Bates. 2000. Mixed-effects models in S
 and S-PLUS. Springer, New York.}
@@ -49,24 +47,22 @@ data(Pradii03,envir = environment())
 ## Monthly precipitation sums and average temperatures:
 data(PTclim05,envir = environment())
 
-##Modeling tree growth:
+##Modeling TRW fluctuations:
 mpin <- modelFrame(Prings05,
-                   y = Pradii03,
-                   form = NULL,# on.time = TRUE,
-                   MoreArgs = list(only.dup = TRUE,
-                                   mp = c(1,1),
-                                   un = c('mm','cm'),
-                                   z = 2003))
+                   sc.c = Pradii03,
+                   rf.t = 2003)
 
-## Detrending the tree-growth MEDS with a (l)td-form model:
-rlme <- frametoLme(mpin,
+## Detrending the TRW fluctuations by fitting a (l)td-form model
+## with Maximum-likelihood method (ML):
+pdata <- mpin$'model'$'data'
+rlme <- frametoLme(pdata,
                    form = 'tdForm',
                    method = 'ML',
                    log.t = TRUE)
 summary(rlme$model)
 
 ##a plot of the modeled fluctuations
-d <- groupedData(lmeForm(rlme$resid,lev.rm = 1),data = rlme$resid)
+d <- groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
 plot(d,groups = ~ sample,auto.key = TRUE)
 
 ## A model of aridity: 
@@ -77,10 +73,10 @@ cf <- modelFrame(PTclim05,
 summary(cf)
 
 ## An lme model of aridity at 'plot' level:
-rmod <- frametoLme(cf,form = 'lmeForm')
+cdata <- cf$'model'$'data'
+rmod <- frametoLme(cdata,form = 'lmeForm')
 summary(rmod$model)
 
-rk <- groupedData(lmeForm(rmod$resid),data=rmod$resid)
+rk <- groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
 plot(rk,ylab = 'detrended AI')
-
 }

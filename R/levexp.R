@@ -12,7 +12,7 @@ levexp <- structure(function# Vector releveling
     if(is.character(levels))
         dsp <- split(levels,levels)
     if(is.data.frame(levels))
-        dsp <- splitFrame(levels)
+        dsp <- slitFrame(levels)
     nam <- lapply(seq_len(length(tx)),
                   function(i)paste("\\b",
                                    names(tx[i]),"\\b",sep = ""))
@@ -30,18 +30,16 @@ levexp <- structure(function# Vector releveling
     names(nmd1) <- nmd[,1]
     
     nmd1 <- nmd1[names(dsp)]
-    
+    nmd1 <- nmd1[!is.na(nmd1)]
     return(nmd1)
 ### numeric vector with expanded/reduced levels.
 } , ex=function(){
     ##Multilevel ecological data series of tree-ring widths:
     data(Prings05,envir = environment())
-    ## Tree-radial increments measured at 2003:
+    ## tree radii measured at 2003:
     data(Pradii03,envir = environment())    
     
-    ## Getting levels in 'sample' factor of the Prings05 object.
-    ntl <- names(splitFrame(Prings05,'sample'))
     ## Releveling the tree radii
-    refs <- levexp(Pradii03,ntl)
-    
+    refs <- levexp(Pradii03,Prings05)
+    refs
 })

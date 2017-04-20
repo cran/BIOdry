@@ -28,20 +28,18 @@ lmeForm <- structure(function#LME formula
     
 ) {
     if(is.null(resp))
-        resp <- colclass(rd)[['num']][1]
+        resp <- cClass(rd, 'numeric')[1L]
     if(is.null(covar))
-        covar <- colclass(rd)[['tmp']][1]        
+        covar <- cClass(rd, 'integer')[1L]        
     covar. <- paste('~',covar,sep = ' ')
     covar <- paste(resp,'~',covar,sep = ' ')
-    f <- colclass(rd)[['fac']]
+    f <- cClass(rd, 'factor')
     if(is.numeric(lev.rm))
         lev.rm <- f[lev.rm]
     nf <- rev(f[!f%in%lev.rm])
     sep. <- ' | '
     if(length(nf) == 0)
         sep. <- ''
-    ## if(length(nf) == 0)
-    ##     stop('absent levels in formula')
     fc <- paste(nf,collapse = '/')
     fr <- paste(covar,fc,sep = sep.)
     fr <- formula(fr,showEnv = FALSE)

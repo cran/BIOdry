@@ -1,4 +1,32 @@
-New changes in BIOdry V0.4:
+New changes in BIOdry V0.5:
+
+1. Five S3 methods were developed: "anova.modelFrame",
+"plot.modelFrame", "plot.muleMan", "plot.wlai", and
+"summary.modelFrame" (see package documentation).
+
+2. Changes in function "modelFrame": This function processes now two
+formats of dendroclimatic records: dendroclimatic chronologies or
+multilevel data series. Examples to implement this function were
+improved (see package documentation).
+
+3. Changes in function "muleMan": Examples to implement this function
+were improved (see package documentation).
+
+4. Three new binary data sets: "Pchron.RData", "Prec.RData", and
+"Temp.RData" were added to examples in data/ folder. These contains
+dendroclimatic chronologies which are described in the package
+documentation.
+
+5. New "mUnits" function to change metric units in dendroclimatic
+chronologies is added to the package.
+
+6. Change in function "amod": Routines to develop allometric scaling
+were enhanced (see package documentation).
+
+7. New "cClclass" function replaces old "colclass" function (see
+package documentation).
+
+Changes in BIOdry V0.4:
 
 1. Changes in function "tdForm": incorrect formulation of this
  time-decline form was fixed (see package documentation).
@@ -8,7 +36,7 @@ frametoLme() to improve implementation of lme function in nlme package
 (see package documentation).
 
 
-New changes in BIOdry V0.3:
+Changes in BIOdry V0.3:
 
 1. Changes in function "shiftFrame": Algorithm to shift ring-data
    frames into multilevel data frames was changed to fix Internal

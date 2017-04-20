@@ -2,7 +2,7 @@
 \alias{wlai}
 \title{Walter-Lieth aridity index}
 \description{Computing the annual aridity index from Walter-Lieth climate diagrams }
-\usage{wlai(cd, sqt = TRUE, fig = FALSE, ...)}
+\usage{wlai(cd, sqt = TRUE)}
 \arguments{
   \item{cd}{\code{data.frame}. Multilevel climatic data series of
 monthly precipitation sums (mm), and monthly average
@@ -12,8 +12,6 @@ characters in \code{\link{month.abb}} or
   \item{sqt}{\code{logical}. Print the square root of the
 aridity index.  If TRUE then computed aridity index
 is normalized with a square root transformation.}
-  \item{fig}{\code{logical}. Plot the Walter-Lieth diagram.}
-  \item{\dots}{Further arguments to be passed to \code{\link{plot}}}
 }
 \details{Areas between temperature and
 precipitation lines when precipitation exceeds
@@ -44,6 +42,6 @@ cld <- data.frame(pr,tm)
 rownames(cld) <- month.abb[c(10:12,1:9)]
 rownames(cld) <- c(10:12,1:9)
 ##computation of the aridity index and climate diagram
-AI <- wlai(cld,fig = TRUE)
+AI <- wlai(cld)
 AI
 }

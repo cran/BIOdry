@@ -2,31 +2,33 @@
 \alias{tdForm}
 \title{ltd formulas}
 \description{This function formulates linear time-decline formulas (ltd) from
-multilevel ecological data series.}
+categorical variables in multilevel ecological data series.}
 \usage{tdForm(rd, prim.cov = FALSE, on.time = TRUE, log.t = FALSE, lev.rm = NULL)}
 \arguments{
   \item{rd}{\code{data.frame} or \code{character} vector. Multilevel
 ecological data series or vector of ecological factors.}
   \item{prim.cov}{\code{logical}. Print a primary covariate
-form: '~ cov'. If FALSE then a complete
-formula: 'resp ~ cov | group' is printed.}
-  \item{on.time}{\code{logical}. If TRUE then t = 'time' (see
-\code{\link{rtimes}}). If FALSE then t = 'year'.}
-  \item{log.t}{\code{logical}. If TRUE then \code{f(t) =
-ln(t)}. Default FALSE produces a td form}
+form: \code{'~ cov'}. If FALSE then a complete
+formula: \code{'resp ~ cov | group'} is printed.}
+  \item{on.time}{\code{logical}. If TRUE then \code{t =
+'time'} (see \code{\link{rtimes}}). If FALSE
+then \code{t = 'year'}.}
+  \item{log.t}{\code{logical}. If TRUE then \code{f(time) =
+ln(time)}. Default FALSE produces a log-linear
+time-decline formula.}
   \item{lev.rm}{NULL or \code{character} name of the ecological
 factor(s) in the MEDS to be removed from the
 formula.}
 }
 \details{the ltd formulas belong to following
-general equation: log (x) = log (cs) + f(t);
-where the relative organic growth (x) are
-explained by the cumulative organic growth (cs)
-plus a function of time f(t); with f(t) being
-either the time or a logarithmic transformation
-the time. The ltd can be implemented by
-\code{\link{modelFrame}} function to detrend
-organic MEDS}
+general equation: log (x) = log (csx) + f(time);
+where the relative organic growth (x) is
+explained by the cumulative organic growth (csx)
+plus a function of time f(time); with f(time)
+being either the time or a logarithmic
+transformation the time. The ltd can be
+implemented by \code{\link{modelFrame}} function
+to subtract trends in organic MEDS}
 \value{\code{formula} with the forms: 'resp ~ cov | group' or '~ cov'.}
 \references{Zeide B. 1993. Analysis of Growth
 Equations. For. Sci., 39: 594-616.}

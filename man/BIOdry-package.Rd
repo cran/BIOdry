@@ -14,9 +14,4 @@ The DESCRIPTION file:
 Maintainer: \packageMaintainer{BIOdry}
 }
 \author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
-
-
-
 \keyword{ package }
-
-

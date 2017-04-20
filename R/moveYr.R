@@ -6,7 +6,7 @@ moveYr <- structure(function#Seasonal years
 (
     cd, ##<<\code{data.frame}. Multilevel ecological data series or
         ##\code{numeric} vector of repeated years with vector names
-        ##being the months.
+        ##belonging to \code{month.abb}.
     ini.mnt = 'Oct' ##<<\code{character}, or \code{numeric} from 1 to
                     ##12. Initial month of the seasonal year. If
                     ##\code{character} then the months are built-in
@@ -32,7 +32,14 @@ moveYr <- structure(function#Seasonal years
     if(isdf){
         ny <- cd
         cd <- cd[,'year']
-        names(cd) <- chn(ny[,'month'])}
+        dt <- ny
+        dtf <- dt[,cClass(dt,'factor')]
+        emnt. <- unlist(Map(function(x)
+            all(levels(x)%in%month.abb),
+            dtf))
+        names(emnt.)[emnt.]
+
+        names(cd) <- chn(ny[,names(emnt.)[emnt.]])}
     if(!isdf)
         names(cd) <- chn(names(cd))
         ini.mnt <- chn(ini.mnt)
@@ -41,16 +48,22 @@ moveYr <- structure(function#Seasonal years
             mn[as.numeric(names(cd))] >= mn[ini.mnt],
                ifelse(
                    mn[ini.mnt] > mn[5],
-                   cd + 1, cd),ifelse(
-                                   mn[ini.mnt] <= mn[5],
-                                   cd - 1, cd)) 
-                                   if(isdf){
-                                       ny[,'year'] <- ncd
-                                       ny[,'month'] <- as.numeric(names(cd))}    
-                                       if(!isdf){
-                                           ny <-  ncd
-                                           names(ny) <- month.abb[as.numeric(names(cd))]}
-                                       return(ny)
+                   cd + 1, cd),
+               ifelse(mn[ini.mnt] <= mn[5],
+                      cd - 1, cd))
+        
+        if(isdf){
+            ny[,'year'] <- ncd
+            ny[,'month'] <- factor(month.abb[
+                as.numeric(names(cd))],
+                levels = month.abb[as.numeric(names(cd))])
+            ny <- ny[cClass(ny)]
+        }    
+        if(!isdf){
+            ny <-  ncd
+            names(ny) <- month.abb[as.numeric(names(cd))]
+        }
+        return(ny)
 ### \code{data.frame} object with the months being \code{numeric}
 ### values and the years beginning at \code{ini.mnt} argument.
 } , ex=function() {
@@ -59,8 +72,8 @@ moveYr <- structure(function#Seasonal years
     data(PTclim05,envir = environment())
     
     ## Making the year 1955 in plot 'P16106' to begin on 'April'
-    cl1 <- splitFrame(PTclim05,'year')[['P16106.1955']]
-    cl2 <- moveYr(cl1,ini.mnt = 4)
+    cl1 <- slitFrame(PTclim05,c('year','plot'))[[1]]
+    cl2 <- moveYr(cl1,ini.mnt = 'Mar')
     head(cl2)
     
     ## a simple vector of years

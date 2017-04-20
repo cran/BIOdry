@@ -22,12 +22,10 @@ or \code{character} vector of levels.}
 \examples{
 ##Multilevel ecological data series of tree-ring widths:
 data(Prings05,envir = environment())
-## Tree-radial increments measured at 2003:
+## tree radii measured at 2003:
 data(Pradii03,envir = environment())    
 
-## Getting levels in 'sample' factor of the Prings05 object.
-ntl <- names(splitFrame(Prings05,'sample'))
 ## Releveling the tree radii
-refs <- levexp(Pradii03,ntl)
-
+refs <- levexp(Pradii03,Prings05)
+refs
 }

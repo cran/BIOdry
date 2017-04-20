@@ -1,104 +1,87 @@
-amod <- structure(function#Allometric modeling
-### Parameters of simple allometric model are evaluated to derive
-### allometric components of organisms from longitudinal variables.
-                  ##details<<The simple allometric model has the form:
-                  ##a * cs ^ b, with a,b being constants in \code{mp},
-                  ##and cs being a sequence of mesures of an organic
-                  ##component (e.g. the tree-radial increments).
-                  ##Different allometric variables can be computed;
-                  ##for the case of tree-radial increments, \code{mp =
-                  ##c(1,1)} produces diameters, and \code{mp = c(0.25
-                  ##* pi,2)} computes basal areas. The argument
-                  ##\code{mp} can have more than two parameters:
-                  ##\code{c(a1,b1,a2,b2, ..., an,bn)}, with \code{n}
-                  ##being the number of times that allometric model
-                  ##will be recursively implemented. Such recursive
-                  ##evaluation is useful to derive variables which
-                  ##depend on other allometric covariables: i.e
-                  ##allometric model would be implemented twice to
-                  ##recursively compute diameters and tree biomasses
-                  ##from tree-ring widths. A column of increments of
-                  ##cs (x) is also computed for further in-package
-                  ##modeling of relative organic growth from
-                  ##cumulative organic growth (see
-                  ##\code{\link{tdForm}} function).
-(
-    
-    cs, ##<<\code{Numeric}. Sequence of mesures of an organic
-        ##component.
-    mp = c(0.5,1), ##<<\code{Numeric}. vector with allometric
-                   ##parameters. Default \code{c(0.5,1)} maintains the
-                   ##original radii (see details for other variables)
-    un = NULL ##<< NULL, or bidimensional \code{character} vector to
-              ##transform SI units of the processed variables. The SI
-              ##units can be expressed in micrometers 'mmm',
-              ##milimeters 'mm', centimeters 'cm', decimeters 'dm', or
-              ##meters 'm'. If NULL then original units are
-              ##maintained.
-) {
-    
-    csn. <- FALSE
-    if(is.data.frame(cs)){
-        csnu <- colclass(cs,T)[['num']]
-        csn <- c(colclass(cs,T)[
-            c('tmp','fac')],recursive = T)
-        csn. <- length(csn)!=0
-        csn.. <- csn[!csn%in%c('x','csx')]
-        cd <- cs
-        cs <- cs[,'csx']
-        names(cs) <- cd[,'year']}
-    
-    chun <- function(from,to){
-        sm <- 10 ^ -c(6,3:0)
-        un <- c('mmm','mm','cm','dm','m')
-        names(sm) <- un
-        eq <- sm[from]/sm[to]
-        names(eq) <- to
-        return(eq)}
-    allm <- function(x,a,b){
-        a * (x ^ b)}
-    x <- 2 * cs #diameters
-    if(length(un) > 1)
-        x <- x * chun(un[1],un[2])
-        
-        fp <- function(x){
-            cn <- c(TRUE,FALSE)
-            l <- list(a = x[cn],b = x[rev(cn)])
-            return(l)}
-        
-        x0 <- x
-        arg <- list()
-        for(i in 1:length(fp(mp)[['a']])){
-            arg[[i]] <- c(fp(mp)[['a']][i],
-                          fp(mp)[['b']][i])
-            x0 <- do.call(allm,list(x0,
-                                    arg[[i]][1],arg[[i]][2]))}
-        
-        x1 <- c(NA,diff(x0))
-        names(x1) <- names(x)
-        xd <- data.frame(x = x1,csx = x0)
-        
-        if(csn.&& length(csnu) > 1){
-            xd <- cd[,csnu]
-            xd[,'x'] <- x1
-            xd[,'csx'] <- x0 }
-        if(csn.)
-            xd <- cbind(xd,cd[,csn..])
-            
-            return(xd)
-### \code{data.frame} of computed allometric-organic components and
-### their correspondent relative increments.
-            
-} , ex=function() {
-    ## radial increments
-    set.seed(1)
-    w <- abs(rnorm(12,1,1))
-    names(w) <- 1951:1962
-    ## scaled and cummulative radial increments
-    sr <- scacum(w)
-    ## diameters
-    d <- amod(sr[,2],c(1,1))
-    ## basal areas (m2):
-    ba <- amod(sr[,2],c(0.25 * pi,2),c('mm','m'))
-    print(ba)
-})
+amod <- structure(function#Allometric scaling.
+### Allometric models and parameters are used to scale organic growth.
+                         ##details<<. Allometric models are useful to
+                         ##scale size-components of organisms such as
+                         ##tree diameters (mp = \code{c(2,1)}) and
+                         ##basal areas (mp = \code{c(0.25 *
+                         ##pi,2)}). Several parameter groups
+                         ##(\code{c(a1,b1,a2,b2, ..., an,bn)}) can be
+                         ##recursively processed.  This enables
+                         ##computation of complex organic
+                         ##variables. For example, above-ground tree
+                         ##biomass could be computed from two
+                         ##parameter groups for tree-biomass, and
+                         ##over-bark diameter scaling.
+                         (
+                             x, ##<<\code{numeric} vector.
+                             mp = c(1,1), ##<<\code{numeric}. Allometric
+                                          ##parameters. Default
+                                          ##\code{c(1,1)} (see
+                                          ##details).
+                             fun = y ~ a*(x ^ b) ##<<\code{formula}.
+                                                 ##Allometric
+                                                 ##model. To properly
+                                                 ##specify other
+                                                 ##formulas, the
+                                                 ##variables (e.g. x
+                                                 ##and y) should
+                                                 ##belong to
+                                                 ##\code{letters[20:26]}.
+                         ) {
+                             
+                             xn. <- FALSE
+                             if(is.data.frame(x)){
+                                 xnu <- cClass(x,'numeric')
+                                 xn <- c(cClass(x,'integer'),
+                                         cClass(x,'factor'))
+                                 xn. <- length(xn)!=0
+                                 xn.. <- xn[!xn%in%c('x','csx')]
+                                 cd <- x
+                                 x <- x[,'csx']
+                                 names(x) <- cd[,'year']}
+                             
+                             
+                             feval <- function(fun,...){
+                                 e <- list(...)
+                                 y <- eval(parse(text=fun), e)
+                                 return(y)}
+                             allv <- all.vars(fun)
+                             prm <- allv[!allv%in%letters[20:26]]
+                             spt <- ceiling(seq_along(mp)/length(prm))
+                             if(!is.list(mp)){
+                                 mp <- split(mp,spt)
+                             }
+                             dpr <- data.frame(do.call(rbind,mp))
+                             names(dpr) <- prm
+                             for(i in 1:length(mp)){
+                                 x <- do.call(feval,
+                                              c(fun,as.list(dpr[i,])))
+                             }
+                             
+                             x1 <- c(NA,diff(x))
+                             names(x1) <- names(x)
+                             xd <- data.frame(x = x1, csx = x)
+                             
+                             if(xn.&& length(xnu) > 1){
+                                 xd <- cd[,xnu]
+                                 xd[,'x'] <- x1
+                                 xd[,'csx'] <- x }
+                             if(xn.)
+                                 xd <- cbind(xd,cd[,xn..])
+                                 
+                                 return(xd)
+### \code{data.frame} of the scaled variable (x) and relative
+###  increments (csx). These are computed with \code{\link{setdiff}}
+###  function.
+                         } , ex=function() {
+                             ## Simulating TRW records:
+                             set.seed(1)
+                             trw <- ts(abs(rnorm(12,1,1)),start = 1950)
+                             ## Cumulative TRW:
+                             cri <- cumsum(trw)
+                             ## tree diameters
+                             td <- amod(cri,mp = c(2,1))
+                             ## plot of the tree diameters and the
+                             ## relative increments:
+                             plot(ts(td))
+                         })

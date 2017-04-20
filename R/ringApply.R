@@ -6,7 +6,7 @@ ringApply <- structure(function#Multilevel apply
                        ##\code{\link{amod}}, or \code{\link{wlai}} can
                        ##be implemented.  Function arguments should be
                        ##formulated as suggested in
-                       ##\code{\link{mapply}}, with no vectorized
+                       ##\code{\link{mapply}}, with constant
                        ##arguments being stored in a \code{MoreArgs}
                        ##list. This function is implemented by
                        ##\code{\link{modelFrame}} for recursive
@@ -24,21 +24,36 @@ ringApply <- structure(function#Multilevel apply
             ##ecological factor in the processed MEDS.
     fn = 'scacum', ##<< \code{character} name of the function to be
                    ##evaluated (see details). Default 'scacum'
-                   ##computes scaled-cummulative radii.
+                   ##computes scaled-cumulative radii.
     ... ##<< Further arguments in the function being specified
         ##\code{fn} argument (see details)
 )
 {
-    
-    levs <- colclass(rd,TRUE)[['fac']]
-    if(is.numeric(lv)) lv <- levs[lv]
-    
-    cl1 <- splitFrame(rd,lv)
+    levs <- cClass(rd,'factor')
+    emnt. <- unlist(Map(function(x)
+        all(x%in%1:12) |
+        all(x%in%month.abb),
+        rd))
+    if(any(emnt.))
+        levs <- cClass(rd[
+            names(emnt.)[!emnt.]], 'factor')
+    if(is.character(lv)){
+        if(!lv%in%levs){
+            levs <- c(lv, levs)
+        }
+        if(lv%in%levs)
+            lv <- match(lv, levs)
+    }
+    if(is.numeric(lv)){
+        levs <- levs[lv:length(levs)]
+    }
+    cl1 <- slitFrame(rd, levs)
     
     fam <- function(x,...){
         do.call(fn,list(x,...))}
     
-    cl2 <- Map(function(x,...)fam(x,...), cl1,...)
+    cl2 <- Map(function(x,...)
+        fam(x,...), cl1,...)
     nord <- names(cl2)[order(names(cl2))]
     cl3 <- cl2[nord]
     cl4 <- do.call(rbind,cl3)
@@ -55,31 +70,44 @@ ex=function() {
     ## MEDS of monthly precipitation sums and average temperatures:
     data(PTclim05,envir = environment())
     
-    ##Time units in Prings05 object are sinchronized at tree level
+    ##Tree-level scaling of years of formation
     ##with 'rtimes' function:
-    dfm1 <- ringApply(Prings05,lv = 2,fn = 'rtimes')
+    dfm1 <- ringApply(Prings05,
+                      lv = 2,
+                      fn = 'rtimes')
     str(dfm1)
-    ##time units from time 1 to time 9:
+    ##Relative time-units from year 1 to year 9:
     subset(dfm1,time%in%c(1:9,NA))
     
-    ## Cummulative radial increments are processed at 'sample' level:
-    dfm2 <- ringApply(dfm1,lv = 'sample',y = Pradii03,fn = 'scacum')
+    ## Sample-level scaling of TRW chronologies around reference radii
+    ## which were measured at 2003:
+    dfm2 <- ringApply(dfm1,
+                      lv = 'sample',
+                      sc.c = Pradii03,
+                      rf.t = 2003,
+                      fn = 'scacum')
     str(dfm2)    
-    ##Allometric modeling at 'sample' level:
-    dfm3 <- ringApply(dfm2,lv = 'sample',fn = 'amod',
-                      MoreArgs = list(mp = c(1,1,0.25 * pi,2),
-                                      un = c('mm','m')))
+    ##Sample-level modeling of basal areas (mm2) via allometric
+    ##scaling:
+    dfm3 <- ringApply(dfm2,
+                      lv = 'sample',
+                      fn = 'amod',
+                      MoreArgs = list(mp = c(2,1,0.25 * pi,2)))
     str(dfm3)
     
-    ## seasonal years from 'October' to 'September':
-    cl1 <- ringApply(PTclim05,lv = 'year',fn = 'moveYr')
+    ## Seasonal years from 'October' to 'September':
+    cl1 <- ringApply(PTclim05,
+                     lv = 'year',
+                     fn = 'moveYr')
     tail(cl1,15)
-    ##using ringApply() function to compute multilevel aridity indexes 
-    ##('wlai' function) at 'year' level:
-    wl <- ringApply(cl1,lv = 'year',fn = 'wlai')
-    str(wl)#only time units with 12 months are evaluated 
     
-    ## A plot of the modeled fluctuations of aridity
+    ##Year-level aridity indexes: 
+    wl <- ringApply(cl1,
+                    lv = 'year',
+                    fn = 'wlai')
+    str(wl)
+    
+    ## Plot of aridity-index fluctuations:
     d <- groupedData(lmeForm(wl),wl)
     plot(d)        
     

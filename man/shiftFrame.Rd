@@ -1,52 +1,43 @@
 \name{shiftFrame}
 \alias{shiftFrame}
 \title{MEDS formatting}
-\description{Ring-data frames (e.g. \code{dplR} chronologies) are formatted into
-multilevel ecological data series (or vice versa). }
-\usage{shiftFrame(rd, lev.nm = c("plot", "tree", "sample"), which.x = NULL, 
-    un = NULL)}
+\description{dendroclimatic chronologies (trw, and climatic data) are formatted
+into multilevel ecological data series. SI units of continuous
+variables in the data can be transformed.}
+\usage{shiftFrame(rd, f.nm = NULL, x.nm = names(rd)[1L], t.nm = "year", 
+    ...)}
 \arguments{
-  \item{rd}{\code{data.frame}. Ring-data frame (see details), or
-multilevel ecological data series (MEDS).}
-  \item{lev.nm}{for the case of ring-data
-frames, \code{character}
-vector with names of the
-factor-level columns in the
-final MEDS, beginning with
-name of the highest level
-column and ending with name
-of the lowest level
-column. If \code{rd} is a
-MEDS then this argument is
-ignored.}
-  \item{which.x}{for the case of MEDS, \code{character} name of
-the column to be reshaped into a ring-data
-frame. If NULL then the first \code{numeric}
-column is processed. If \code{rd} is a ring-data
-frame then this argument is ignored.}
-  \item{un}{\code{NULL}, one, or two \code{character} names of
-SI units to record/transform the processed
-variables. One character records metric system; two
-characters with the form c(initial, final) change SI
-units in the processed data. Defined SI units are
-micrometers 'mmm', milimeters 'mm', centimeters 'cm',
-decimeters 'dm', or meters 'm'. If NULL then no metric
-system is recorded.}
+  \item{rd}{\code{data.frame} or \code{list}. Dendroclimatic
+chronology DC (see details) or list of two DCs
+(e.g. precipitation and temperature records), or multilevel
+ecological data series (MEDS).}
+  \item{f.nm}{\code{character} vector. In the case of formatting
+ring-data frames, column names of the factors in
+the new MEDS. If \code{NULL} then this argument is
+recycled from attributes in \code{rd}. If such an
+attribute is also \code{NULL} then a sequence of
+codes (F1, F2, ..., Fn) is used.}
+  \item{x.nm}{\code{character}. In the case of
+formatting MEDS, name of the variable to be
+reshaped. Default uses name of first
+variable of \code{rd}.}
+  \item{t.nm}{\code{character}.In the case of formatting MEDS,
+name of the time-units variable .}
+  \item{\dots}{Further arguments in \code{\link{mUnits}}.}
 }
-\details{Correct formatting of ring-data
-frames requires their row names to be
-time-units labels (e.g. years). The column
-names should be dot-separated labels
-representing the hierarchy of ecological
+\details{Row names of dendroclimatic data
+frames are time units (e.g. years). Column
+names are dot-separated labels representing
+the hierarchy of ecological or time-units
 factors, where the higher levels are defined
 first and the lower levels after. For
 example, code 'P16106.17' is the column name
-of tree '17' in plot 'P16106'. SI units of
-the processed chronologies can also be
-changed.}
-\value{If \code{rd} is a ring-data frame then output is a MEDS. If
-\code{rd} is a MEDS then the output is a ring-data frame (see
-details).}
+of core 'a' in tree '17' in plot
+'P16106'. Labels containing monthly
+abbreviations are also formatted.}
+\value{When \code{rd} argument is a dendroclimatic chronology (see
+details) then the output is a \code{\link{groupedData}} object,
+and viceversa.}
 
 \author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
 
@@ -54,14 +45,14 @@ details).}
 
 
 \examples{
-##tree-ring MEDS:
+##tree-ring widths formated as a groupedData object:
 data(Prings05,envir = environment())
 
-## Formatting the MEDS into a ring-data frame:
-pwide <- shiftFrame(Prings05)
+## Formatting the groupedData object into a ring-data frame:
+pwide <- shiftFrame(Prings05, from = 'mm', to = 'mmm')
 str(pwide)
-## Formatting the ring-data frame into a MEDS, and changing SI
-## units of the rings from milimeters to micrometers:
-plong <- shiftFrame(pwide,un = c('mm','mmm'))
-str(plong)
+## Formatting the ring-data frame into a groupedData object, and
+## changing SI units from micrometers to milimeters:
+plong <- shiftFrame(pwide,from = 'mmm', to = 'mm')
+plot(plong)
 }

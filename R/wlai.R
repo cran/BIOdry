@@ -20,17 +20,14 @@ wlai <- structure(function#Walter-Lieth aridity index
        ##temperatures (degree C), with row names being monthly
        ##characters in \code{\link{month.abb}} or
        ##\code{\link{month.name}}.
-    sqt = TRUE, ##<<\code{logical}. Print the square root of the
+    sqt = TRUE ##<<\code{logical}. Print the square root of the
                 ##aridity index.  If TRUE then computed aridity index
                 ##is normalized with a square root transformation.
-    fig = FALSE, ##<<\code{logical}. Plot the Walter-Lieth diagram.
-    ... ##<< Further arguments to be passed to \code{\link{plot}}
 )
 {
     AI <- NA
     
-    csn <- c(colclass(cd,T)[
-        c('tmp','fac')],recursive = T)
+    csn <- c(cClass(cd, 'integer'), cClass(cd, 'factor'))
     csn. <- length(csn)!=0
         
     pr <- cd[,1];tm <- cd[,2]
@@ -97,42 +94,29 @@ wlai <- structure(function#Walter-Lieth aridity index
         wet <- surf(fb(xn)) - surf(fb(tm))
         dry <- surf(fb(xn)) - surf(fb(pr.))
         AI <- dry/wet
-        
-        if(sqt)AI <- sqrt(AI)}
+        if(sqt)AI <- sqrt(AI)
+        AI. <- AI
+    }
     
-    if(csn.)
-        AI <- unique(cbind(AI,cd[,csn[-1L]]))
-        
-    if(fig&min.length){
-        ##color palette
-        col. <- paste('gray',c(70,60,30), sep = '')
-        
-        par(oma = c(0,0,0,2))
-        plot(fb(xn),
-             ylim = c(ptm,max(c(pr.,tm))),
-             col = col.[1],type='l',
-             xaxt = 'n',yaxt = 'n',
-             xlab = 'Month',ylab = NA, ...)
-        mns <- rownames(cd)
-        xap <- unique(fb(pr)[,1])
-        yap <- pretty(c(ptm,max(c(pr.,tm))))
-        axis(4,at = yap, labels = yap,las = 1)
-        axis(2,at = yap, labels = yap/2,las = 1)
-        axis(1,at = xap, tick = FALSE,labels = mns)            
-        axis(1,at = xap - 0.5, tick = TRUE,labels = FALSE)            
-        mtext(text = expression(~degree~C),
-              las = 1,at = min(xap) - 1.2 * par('cex'))
-        mtext(text = 'mm',las = 1,
-              at = max(xap) + 1.2 *par('cex'))
-        polygon(fb(xn), border = NA, col = col.[2])
-        polygon(fb(xn..), border = NA, col = col.[1])
-        polygon(fb(tm), border = NA, col = col.[3])
-        polygon(fb(xn1), border = col.[1], col = 'white')
-        lines(c(min(xap),max(xap)),c(100,100),col =col.[1],lty = 1)
-        lp <- 'top'
-        legend(lp,legend = c('Dry season','Moist season'),
-               fill = c(col.[3],col.[1]),cex = 0.8,
-               horiz = TRUE, border = NA,bty = 'n')}
+    if(csn.){
+    emnt. <- unlist(Map(function(x)
+        all(x%in%1:12) |
+        all(x%in%month.abb),
+        cd))
+        fc <- cClass(cd[
+            names(emnt.)[!emnt.]], 'factor')
+    ni <- cClass(cd, 'integer')
+    fni <- c(ni, fc)
+    AI <- unique(cbind(AI, cd[, fni]))
+        }
+    if(min.length){
+        attributes(AI) <- list(xn = xn,
+                               xn.. = xn..,
+                               xn1 = xn1, ptm = ptm,
+                               pr = pr, pr. = pr.,
+                               r.n = rownames(cd), tm = tm,
+                               ai = AI.)}
+        class(AI) <- c('wlai', class(AI))
     return(AI)                
 ### \code{numeric} aridity index and plot of the Walter-Lieth diagram.
 } ,
@@ -146,6 +130,6 @@ ex=function() {
     rownames(cld) <- month.abb[c(10:12,1:9)]
     rownames(cld) <- c(10:12,1:9)
     ##computation of the aridity index and climate diagram
-    AI <- wlai(cld,fig = TRUE)
+    AI <- wlai(cld)
     AI
 })

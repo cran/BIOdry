@@ -1,25 +1,27 @@
-modelFrame <- structure(function #MEDS modeling 
-### This function develops recursive modeling and/or LME detrending of
-### multilevel ecological data series (MEDS).
-                        ##details<< Diverse one-level functions are
-                        ##recursively implemented. Processed MEDS can
-                        ##also be detrended with \code{\link{lme}}
-                        ##models and other \code{\link{nlme}}
-                        ##methods. Default arguments produce modeling
-                        ##of tree growth from dendrochonological MEDS
-                        ##with recursive implementation of
+modelFrame <- structure(function #Dendroclimatic-fluctuations modeling
+### This function develops recursive evaluation of functions for
+### one-level modeling (FOLM) and LME detrending of dendroclimatic
+### chronologies.
+                        ##details<< Defaults model fluctuations in
+                        ##tree-ring width chronologies via recursive
+                        ##implementation of four FOLM:
                         ##\code{\link{rtimes}}, \code{\link{scacum}},
                         ##\code{\link{amod}}, and
-                        ##\code{\link{frametoLme}}
-                        ##functions. Nevertheless, other functions can
-                        ##be implemented (see example with climatic
-                        ##data). Internal algorithm uses
+                        ##\code{\link{frametoLme}}. Nevertheless,
+                        ##other FOLM can be implemented to model
+                        ##aridity-index fluctuations(see example with
+                        ##climatic data). Processed chronologies are
+                        ##detrended with \code{\link{lme}} function
+                        ##and other \code{\link{nlme}} methods
+                        ##. Internal algorithm uses
+                        ##\code{\link{shiftFrame}}
                         ##\code{\link{arguSelect}} and
                         ##\code{\link{ringApply}}
-                        ##functions. Consequently, arguments not to be
-                        ##vectorized should be specified in 'MoreArgs'
-                        ##lists (see example). Objects of type
-                        ##\code{modelFrame} can further be modified
+                        ##functions. Consequently, arguments that are
+                        ##not iterated over factor-level labels in the
+                        ##processed data are specified in 'MoreArgs'
+                        ##lists (see examples). Arguments in
+                        ##\code{modelFrame} objects can be updated
                         ##with \code{\link{update}} function.
 
                         ##references<< Lara W., F. Bravo,
@@ -29,73 +31,112 @@ modelFrame <- structure(function #MEDS modeling
                         ##approach. Agric. For. Meteorol.,
                         ##178-179:140-151.
 (
-    rd, ##<<\code{data.frame}. Multilevel ecological data series.
-    lv = list(2,1,1), ##<< List of \code{numeric} positions in the
-                      ##factor-level columns of the processed MEDS to
-                      ##implement the one-level functions, or
-                      ##\code{character} names of the factor-level
-                      ##columns.
-    fn = list('rtimes','scacum','amod'), ##<< List of \code{character}
-                                         ##names of the one-level
-                                         ##functions to be recursively
-                                         ##implemented (see details).
-    form = NULL, ##<<\code{character} or \code{NULL}. Name of an LME
-                 ##formula to be used in residual subtraction.  Two
-                 ##methods are available: 'lmeForm' or 'tdForm'. These
-                 ##methods implement functions with the same names
-                 ##(see \code{\link{lmeForm}} and
-                 ##\code{\link{tdForm}}). If \code{NULL} then the lme
-                 ##modeling is not developed.
-    ... ##<< Further arguments to be evaluated by one-level or
-        ##\code{\link{lme}} functions (see details).
+    rd, ##<<\code{data.frame} or \code{list}. Dendroclimatic
+        ##chronology or Multilevel ecological data series.
+    fn = list('rtimes','scacum','amod'), ##<< \code{list}.  Names of
+                                         ##the functions for one-level
+                                         ##modeling to be recursively
+                                         ##implemented.
+
+    lv = list(2,1,1), ##<< \code{list}. \code{numeric} positions in
+                      ##the factor-level labels of \code{rd} to
+                      ##implement the one-level functions. If
+                      ##\code{rd} is a MEDS, then \code{character}
+                      ##names of the factor-level columns.
+    form = 'tdForm',   ##<<\code{character} or \code{NULL}. Name of a
+                       ##detrending formula.  Two in-package
+                       ##methods are available: the default
+                       ##\code{\link{tdForm}} or
+                       ##\code{\link{lmeForm}}.
+    
+    ... ##<< Further arguments in \code{\link{mUnits}}, or in the
+        ##functions for one-level modeling, or in the
+        ##\code{\link{lme}} function/methods, or in the detrending
+        ##formula.
 ) {
-    
+    lse <- list(...)
+    mln <- length(lv)
+    iswide <- all(sapply(rd, is.numeric))
+    islist <- class(rd)%in%'list'
+    if(any(iswide, islist)){
+        rd <- shiftFrame(rd)
+    }
+    fns <- 'mUnits'
+    if(any(names(lse)%in%names(formals(fns)[-1L]))){
+        nmu <- cClass(rd, 'numeric')
+        rdu <- arguSelect(x = rd[,nmu], fun = fns, ...)
+        rd[,nmu] <- do.call(fns, rdu)
+        if('sc.c'%in%names(lse)){
+            sca <- arguSelect(x = lse$'sc.c', fun = fns, ...)
+            lse[['sc.c']] <- do.call(fns, sca)
+        }
+    }
+    mar <- 'MoreArgs'
+    ls. <- lapply(lse,class)%in%'list'
+    yls <- Map(unlist,lse[ls.])
+    yls[c('fn','lv')] <- list(fn,lv)
+    nma <- yls[!names(yls)%in%mar]
+    lsp <- lse[!names(lse)%in%names(yls)]
+    s <- names(lse)%in%mar
+    if(any(s))
+        lsp[[mar]] <- lse[[mar]]
     ar <- list()
-    mln <- min(sapply(list(lv,fn),length))
-    
+    mln <- length(nma[[1L]])
     for(i in 1:mln){
-        ar[[i]] <- arguSelect(rd,
-                              lv = lv[[i]],fn = fn[[i]],...)
-        rd <- do.call(ringApply,ar[[i]])}
-    if(!is.null(form)){
-        ar <- arguSelect(rd,
-                         fun = c('frametoLme','lme',form),...)
-        ar[['form']] <- form
-        rd <- do.call(frametoLme,ar)
-        rd[['call']] <- sys.call()}
+        lsl <- lapply(nma, '[[', i)
+        lt <- list(rd, fun = 'ringApply')
+        nl <- unlist(Map(levels,
+                         rd[cClass(rd,'factor')]))
+        spd <- function(x){
+            unlist(strsplit(x, '\\.'))}
+        my <- unlist(Map(function(x)
+            !is.null(names(x)) &&
+            spd(names(x))%in% nl, lsp))
+        if(any(my)) {
+            lsp[names(lsp)[my]] <- Map(function(x)
+                levexp(x, rd),lsp[names(lsp)[my]])}
+        lst <- c(lsl, lsp, lt)
+        ar[[i]] <- do.call('arguSelect', lst)
+        rd <- do.call('ringApply', ar[[i]])
+    }
+    arl <- arguSelect(rd,
+                      fun = c('frametoLme','lme', form),...)
+    arl[['form']] <- form
+    rd <- do.call('frametoLme',arl)
+    rd[['call']] <- sys.call()
+    class(rd) <- c('modelFrame', class(rd))
     return(rd)
-###Depending on the \code{form} argument, either MEDS or
-###\code{\link{lme}} object.
+### Threefold list with fluctuations in \code{fluc},
+### {\link{groupedData}} object in \code{model}, and model call in
+### \code{call}.
 } , ex=function() {
+        ##TRW chronology (mm) and inside-bark radii
+    data(Pchron,envir = environment())
+    data(Pradii03,envir = environment())
+    ## Tree-ring width fluctuations:
+    trwf <- modelFrame(Pchron,
+                       sc.c = Pradii03,
+                       rf.t = 2003,
+                       log.t = TRUE)
+    summary(trwf$'model')
+
+    ## Tree-diameter fluctuations:
+    tdf <- modelFrame(Pchron,
+                       sc.c = Pradii03,
+                       rf.t = 2003,
+                      log.t = TRUE,
+                      MoreArgs = list(mp = c(pi,2)))
     
-    ##Multilevel data frame of tree-ring widths:
-    data(Prings05,envir = environment())
-    ## Radial increments measured on 2003:
-    data(Pradii03,envir = environment())    
-    ## Climatic records of monthly precipitations and temperatures
-    data(PTclim05,envir = environment())
+    summary(tdf$'model')
     
-    ## Modeling tree growth:
-    ar <- modelFrame(Prings05,
-                     y = Pradii03,
-                     form = 'tdForm',
-                     MoreArgs = list(only.dup = TRUE,
-                                     mp = c(1,1),
-                                     un = c('mm','cm'),z = 2003))
-    head(ar$resid)
-    summary(ar$model)    
-    ##a plot of the tree-growth fluctuations:
-    d <- groupedData(lmeForm(ar$resid,lev.rm = 1),data = ar$resid)
-    plot(d,groups = ~ sample,auto.key = TRUE)
     
-    ## Modeling aridity:
-    cf <- modelFrame(rd=PTclim05,
-                     lv = list('year','year'),
-                     fn = list('moveYr','wlai'),
-                     form = 'lmeForm')
-    head(cf$resid)
-    ##a plot of the aridity fluctuations:
-    dc <- groupedData(lmeForm(cf$resid),data = cf$resid)
-    plot(dc, auto.key = TRUE)
-    
+    ## Climatic records:
+    data(Temp,envir = environment())
+    data(Prec,envir = environment())
+    ## Aridity-index fluctuations:
+    aif <- modelFrame(rd = list(Prec, Temp),
+                      fn = list('moveYr','wlai'),
+                      lv = list('year','year'),
+                      form = 'lmeForm')
+    summary(aif$'model')
 })
