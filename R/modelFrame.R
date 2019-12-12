@@ -122,19 +122,22 @@ modelFrame <- structure(function #Dendroclimatic-fluctuations modeling
     ## Modeling tree-biomass fluctuations while accounting for
     ## within-plot source variability (see defaults in "modelFrame"
     ## function)
-    trwf <- modelFrame(Pchron,
-                       to = 'cm',
-                       MoreArgs = list(mp = c(2,1, biom_param)),
-                       log.t = FALSE,
-                       on.time = FALSE)
-            
+    ## \donttest{
+    ## trwf <- modelFrame(Pchron,
+    ##                    to = 'cm',
+    ##                    MoreArgs = list(mp = c(2,1, biom_param)),
+    ##                    log.t = FALSE,
+    ##                    on.time = FALSE)
+## }
     ## Climatic records:
     data(Temp,envir = environment())
     data(Prec,envir = environment())
     ## Aridity-index fluctuations:
-    aif <- modelFrame(rd = list(Prec, Temp),
-                      fn = list('moveYr','wlai'),
-                      lv = list('year','year'),
-                      form = 'lmeForm')
-    summary(aif$'model')
+    ## \donttest{
+    ## aif <- modelFrame(rd = list(Prec, Temp),
+    ##                   fn = list('moveYr','wlai'),
+    ##                   lv = list('year','year'),
+    ##                   form = 'lmeForm')
+    ## summary(aif$'model')
+    ## }
 })

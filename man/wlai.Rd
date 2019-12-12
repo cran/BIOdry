@@ -20,7 +20,7 @@ seasons, and areas where temperature exceeds
 precipitation are calculated as indicator of dry
 season. The aridity index is defined as the
 quotient between the areas of dry and wet
-seasons. Those precipitations over 100 mm are
+seasons. Precipitations over 100 mm are
 scaled such that 1 degree C is equal to 5 mm.}
 \value{\code{numeric} aridity index and plot of the Walter-Lieth diagram.}
 \references{Manrique E.,

@@ -29,11 +29,13 @@ biom_param <- c(2.87, 0.85, 0.05, 2.5)
 
 ## Modeling tree-biomass fluctuations while accounting for
 ## within-plot source variability (see defaults in "modelFrame"
-## function)
-trwf <- modelFrame(Pchron,
-                   to = 'cm',
-                   MoreArgs = list(mp = c(2,1, biom_param)),
-                   log.t = TRUE,
-                   on.time = TRUE)
-summary(trwf)
+## function):
+ \donttest{
+ trwf <- modelFrame(Pchron,
+                    to = 'cm',
+                    MoreArgs = list(mp = c(2,1, biom_param)),
+                    log.t = TRUE,
+                    on.time = TRUE)
+ summary(trwf)
+ }
 }

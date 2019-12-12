@@ -91,36 +91,42 @@ frametoLme <- structure(function# LME modeling
     ## Modeling tree-biomass fluctuations while accounting for
     ## within-plot source variability (see defaults in "modelFrame"
     ## function)
-    trwf <- modelFrame(Pchron,
-                       to = 'cm',
-                       MoreArgs = list(mp = c(2,1, biom_param)),
-                       log.t = FALSE,
-                       on.time = FALSE)
+    ## \donttest{
+    ## trwf <- modelFrame(Pchron,
+    ##                    to = 'cm',
+    ##                    MoreArgs = list(mp = c(2,1, biom_param)),
+    ##                    log.t = FALSE,
+    ##                    on.time = FALSE)
+    ## }
     ## Detrending the fluctuations by fitting a (l)td-form model
     ## with Maximum-likelihood method (ML):
-    pdata <- trwf$'model'$'data'
-    rlme <- frametoLme(pdata,
-                       form = 'tdForm',
-                       method = 'ML',
-                       log.t = TRUE)
-    summary(rlme$model)
-    
-    ##a plot of the modeled fluctuations
-    d <- groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
-    plot(d,groups = ~ sample,auto.key = TRUE)
-    
-    ## A model of aridity: 
-    cf <- modelFrame(PTclim05,
-                     lv = list('year','year'),
-                     fn = list('moveYr','wlai'),
-                     form = NULL)
-    summary(cf)
-    
+    ## \donttest{
+    ## pdata <- trwf$'model'$'data'
+    ## rlme <- frametoLme(pdata,
+    ##                    form = 'tdForm',
+    ##                    method = 'ML',
+    ##                    log.t = TRUE)
+    ## summary(rlme$model)
+    ## }
+    ##a plot of the modeled fluctuations:
+    ## \donttest{
+    ## d <- groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
+    ## plot(d,groups = ~ sample,auto.key = TRUE)
+    ## }
+    ## A model of aridity:
+    ## \donttest{
+    ## cf <- modelFrame(PTclim05,
+    ##                  lv = list('year','year'),
+    ##                  fn = list('moveYr','wlai'),
+    ##                  form = NULL)
+    ## summary(cf)
+    ## }
     ## An lme model of aridity at 'plot' level:
-    cdata <- cf$'model'$'data'
-    rmod <- frametoLme(cdata,form = 'lmeForm')
-    summary(rmod$model)
-    
-    rk <- groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
-    plot(rk,ylab = 'detrended AI')
+    ## \donttest{
+    ## cdata <- cf$'model'$'data'
+    ## rmod <- frametoLme(cdata,form = 'lmeForm')
+    ## summary(rmod$model)
+    ## rk <- groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
+    ## plot(rk,ylab = 'detrended AI')
+    ## }
 })

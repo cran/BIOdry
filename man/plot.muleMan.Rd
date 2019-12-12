@@ -28,25 +28,30 @@ biom_param <- c(2.87, 0.85, 0.05, 2.5)
 
 ## Modeling tree-biomass fluctuations while accounting for
 ## within-plot source variability (see defaults in "modelFrame"
-## function)
-trwf <- modelFrame(Pchron,
-                   to = 'cm',
-                   MoreArgs = list(mp = c(2,1, biom_param)),
-                   log.t = FALSE,
-                   on.time = FALSE)
+## function):
+ \donttest{
+ trwf <- modelFrame(Pchron,
+                    to = 'cm',
+                    MoreArgs = list(mp = c(2,1, biom_param)),
+                    log.t = FALSE,
+                    on.time = FALSE)
+ }
 ## Climatic Records:
 data(Temp,envir = environment())
 data(Prec,envir = environment())
 ## Aridity-index fluctuations:
-aif <- modelFrame(rd = list(Prec, Temp),
-                  fn = list('moveYr','wlai'),
-                  lv = list('year','year'),
-                  form = 'lmeForm')
-
+ \donttest{
+     aif <- modelFrame(rd = list(Prec, Temp),
+                       fn = list('moveYr','wlai'),
+                       lv = list('year','year'),
+                       form = 'lmeForm')
+ }
 ##Multivariate comparison:
-mcomp <- muleMan(trwf,
-                    aif,
-                 nperm = 10^3)
+ \donttest{
+ mcomp <- muleMan(trwf,
+                     aif,
+                  nperm = 10^3)
 
-plot(mcomp, grid = FALSE)    
+ plot(mcomp, grid = FALSE)
+ }
 }

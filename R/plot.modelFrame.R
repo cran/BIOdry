@@ -28,11 +28,12 @@ plot.modelFrame <- structure(function #Plot modelFrame objects
     ## Modeling tree-biomass fluctuations while accounting for
     ## within-plot source variability (see defaults in "modelFrame"
     ## function)
-    trwf <- modelFrame(Pchron,
-                       to = 'cm',
-                       MoreArgs = list(mp = c(2,1, biom_param)),
-                       log.t = FALSE,
-                       on.time = FALSE)
-    plot(trwf, grid = FALSE)
-
+    ## /donttest{
+    ##     trwf <- modelFrame(Pchron,
+    ##                        to = 'cm',
+    ##                        MoreArgs = list(mp = c(2,1, biom_param)),
+    ##                        log.t = FALSE,
+    ##                        on.time = FALSE)
+    ##     plot(trwf, grid = FALSE)
+    ## }
 })
