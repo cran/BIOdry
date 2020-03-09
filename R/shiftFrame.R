@@ -63,7 +63,10 @@ shiftFrame <- structure(function#MEDS formatting
         }
         nm <- rep(colnames(rd),each=nrow(rd))
         lev.1 <- as.data.frame(
-            do.call(rbind, strsplit(nm,split = sepl)))
+            do.call(rbind, strsplit(nm,split = sepl)),
+            stringsAsFactors = TRUE)
+        ## lev.1 <- as.data.frame(
+        ##     do.call(rbind, strsplit(nm,split = sepl)))
         if(is.null(f.nm)){
             f.nm <- attributes(rd)$'f.nm'
         }
@@ -82,7 +85,7 @@ shiftFrame <- structure(function#MEDS formatting
         if(is.null(xvr)){
             xvr <- 'x'
         }
-        dt <- na.omit(data.frame(x, yr, lev.1))
+        dt <- na.omit(data.frame(x, yr, lev.1, stringsAsFactors = TRUE))
         names(dt) <- c(xvr,yr.nm, f.nm)
         dt <- dt[,cClass(dt, 'all')]
         rownames(dt) <- NULL
