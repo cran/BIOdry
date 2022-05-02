@@ -13,9 +13,9 @@
 \usage{data(Pchron)} 
 \format{ \code{data.frame} object with eight columns.
   \describe{
-    \item{}{Row names of the data set are time-units labels (years of formation).}
+    \item{Rows}{Row names of the data set are time-units labels (years of formation).}
 
-   \item{}{Column names represent levels in three within-stand
+   \item{Columns}{Column names represent levels in three within-stand
     ecological factors that are common to most TRW data and represent
     variability in stand qualities (stand), tree-radial morphology
     (sample), and tree genetics/phenotypes (tree).  The names are

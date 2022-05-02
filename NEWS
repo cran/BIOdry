@@ -1,3 +1,6 @@
+New change in BIOdry V0.9:
+We added labels to items in three files: Pchron.Rd, Prec.Rd, and Temp.Rd
+
 New change in BIOdry V0.8:
 
 Changes in "shiftFrame": We have used stringAsFactors = TRUE in 

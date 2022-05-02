@@ -1,6 +1,6 @@
-b3fa177c7a488aac5e7062eb0e8dcef0 *DESCRIPTION
+60433808c7e464aabdf445e36b8468a9 *DESCRIPTION
 89f20d5fadf333e89ca17d05a87b306e *NAMESPACE
-e0f7ce3d0f9dd0b994791dd633c3305d *NEWS
+d7139ef22bea24fc7ef13f16470088e6 *NEWS
 90becd47207ecf5ea48550ed8e59d42c *R/amod.R
 2c10ea2d72a76d0449359815414794bc *R/anova.modelFrame.R
 d585dcb836dccbd621da42477e4dac5f *R/arguSelect.R
@@ -23,7 +23,7 @@ f5b773820d64a08fd68f7c873b6e1b58 *R/slitFrame.R
 0abeca8a66dad3b8e1900b122f674dc5 *R/summary.modelFrame.R
 92cb9997717994e64f354b24901a4d71 *R/tdForm.R
 c27ab260b3d8285460bd0aa3dfaced1e *R/wlai.R
-9460e128e9dfa170bd54baa70635581b *build/partial.rdb
+f98c210fc0cb9f1b5b14cd0fae737629 *build/partial.rdb
 4aba57b8c993bacef121f46c87b0bf15 *data/PTclim05.RData
 42e55584d0ab17866425eca9172571d5 *data/Pchron.RData
 e7f5c14c0f48b284bfd522473904c43c *data/Pradii03.RData
@@ -32,11 +32,11 @@ e7f5c14c0f48b284bfd522473904c43c *data/Pradii03.RData
 3417010c4b5e7d88c0d682d877a093eb *data/Temp.RData
 2b159c40161826f4a417ba67cae5b4c4 *man/BIOdry-package.Rd
 7febbc0688b1f60147ff867d35a0461f *man/PTclim05.Rd
-2364b72f2ccaf1b96739b3ad923639ed *man/Pchron.Rd
+40bca87b6c869e1132fabb07e0cc1c51 *man/Pchron.Rd
 d792a8b7f9d6061e049cf74ca4b0f117 *man/Pradii03.Rd
-13f4f8ccd5558392fa50f3bda4471ff2 *man/Prec.Rd
+678cf7e01f8c433220b1e25df32b3222 *man/Prec.Rd
 b74a9161b8a97579b211d7254d99cfdf *man/Prings05.Rd
-1a3a4589ef9e2a471d04fd5e4d2ee271 *man/Temp.Rd
+c503c7fb574dcdf3398d7ad50290b578 *man/Temp.Rd
 952e3f0c8a0ee3acc3df45dee6011d3c *man/amod.Rd
 d103408a1484946a687c679e3cfd7cc3 *man/anova.modelFrame.Rd
 f6fceea99eb2fe6e1581c66ac8251c5f *man/arguSelect.Rd

@@ -8,7 +8,7 @@
 \usage{data(Prec)}
 \format{\code{data.frame} object with 24 records.
     \describe{
-      \item{}{Column names contain plot codes and monthly
+      \item{Column}{Column names contain plot codes and monthly
 	abbreviations}
       }
 }
