@@ -2,7 +2,8 @@
 \alias{slitFrame}
 \title{Multilevel splitting}
 \description{This function splits a Multilevel data frame into factor levels.}
-\usage{slitFrame(rd, lv = cClass(rd, "factor"))}
+\usage{slitFrame(rd, lv = cClass(rd, 
+    "factor"))}
 \arguments{
   \item{rd}{\code{data.frame} object with factor-level columns.}
   \item{lv}{\code{Numeric} or
@@ -16,7 +17,7 @@ column should be used.}
 
 \value{\code{list} of \code{data.frame} objects.}
 
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

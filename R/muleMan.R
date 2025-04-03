@@ -1,11 +1,10 @@
 muleMan <- structure(function#Multilevel dendroclimatic correlograms
 ### Multivariate correlograms between TRW fluctuations and climatic
 ### fluctuations.
-                     ##details<<Function \code{\link{mgram}} in
-                     ##package \code{\link{ecodist}} is implemented to
-                     ##compare the dendroclimatic fluctuations. Models
-                     ##being compared should have common higher-level
-                     ##factors (see example).
+                     ##details<<Function \code{\link[ecodist]{mgram}}
+                     ##is implemented to compare the dendroclimatic
+                     ##fluctuations. Models being compared should have
+                     ##common higher-level factors (see example).
                      
                      ##references<< Lara W., F. Bravo,
                      ##D. Maguire. 2013. Modeling patterns between
@@ -14,11 +13,11 @@ muleMan <- structure(function#Multilevel dendroclimatic correlograms
                      ##approach. Agric. For. Meteorol.,
                      ##178-179:140-151.
 (
-    rd, ##<<\code{dataframe} or \code{\link{groupedData}}. TRW
+    rd, ##<<\code{dataframe} or \code{\link[nlme]{groupedData}}. TRW
         ##fluctuations such as that produced by
         ##\code{\link{modelFrame}}.
     cd, ##<<\code{dataframe} or
-        ##\code{\link{groupedData}}. Aridity-index fluctuations such
+        ##\code{\link[nlme]{groupedData}}. Aridity-index fluctuations such
         ##as that produced by \code{\link{modelFrame}}.
     rd.var = NULL, ##<<\code{character} or \code{NULL}. Column name of
                    ##the TRW fluctuations to be compared. If
@@ -26,7 +25,7 @@ muleMan <- structure(function#Multilevel dendroclimatic correlograms
     cd.var = NULL, ##<<\code{character} or \code{NULL}. Column name of
                    ##the aridity-index fluctuations to be compared. If
                    ##\code{NULL} then the first column is used.
-    ... ##<<Further arguments in \code{\link{mgram}}
+    ... ##<<Further arguments in \code{\link[ecodist]{mgram}}
 ) {
     
     if(!is.data.frame(rd)){

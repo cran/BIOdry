@@ -3,7 +3,9 @@
 \title{ltd formulas}
 \description{This function formulates linear time-decline formulas (ltd) from
 categorical variables in multilevel ecological data series.}
-\usage{tdForm(rd, prim.cov = FALSE, on.time = TRUE, log.t = FALSE, lev.rm = NULL)}
+\usage{tdForm(rd, prim.cov = FALSE, 
+    on.time = TRUE, log.t = FALSE, 
+    lev.rm = NULL)}
 \arguments{
   \item{rd}{\code{data.frame} or \code{character} vector. Multilevel
 ecological data series or vector of ecological factors.}
@@ -32,7 +34,7 @@ to subtract trends in organic MEDS}
 \value{\code{formula} with the forms: 'resp ~ cov | group' or '~ cov'.}
 \references{Zeide B. 1993. Analysis of Growth
 Equations. For. Sci., 39: 594-616.}
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

@@ -20,7 +20,7 @@ ringApply <- structure(function#Multilevel apply
                        ##178-179:140-151.
 (
     rd, ##<<\code{data.frame}. Multileve ecological data series.
-    lv = 1, ##<< {numeric} position, or {character} name, of an
+    lv = 1, ##<< \code{numeric} position, or \code{character} name, of an
             ##ecological factor in the processed MEDS.
     fn = 'scacum', ##<< \code{character} name of the function to be
                    ##evaluated (see details). Default 'scacum'

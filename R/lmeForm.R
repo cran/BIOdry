@@ -2,7 +2,7 @@ lmeForm <- structure(function#LME formula
 ### This function computes LME formulas from multilevel ecological
 ### data series (MEDS).
                      ##details<< Formulas of the form \code{resp ~ cov
-                     ##| group} (see \code{\link{groupedData}}
+                     ##| group} (see \code{\link[nlme]{groupedData}}
                      ##function) are computed from MEDS. The formulas
                      ##can be implemented by
                      ##\code{\link{modelFrame}} function to detrend MEDS

@@ -1,81 +1,73 @@
-New change in BIOdry V0.9:
-We added labels to items in three files: Pchron.Rd, Prec.Rd, and Temp.Rd
+# CHANGES in BIOdry 0.9.1  
 
-New change in BIOdry V0.8:
+- Fixed missing Rd \link{} targets by providing package anchors for:  
+  - `anova.modelFrame.Rd`: linked `anova.lme` to the **nlme** package.  
+  - `frametoLme.Rd`: linked `lme`, `nlme`, and `groupedData` to **nlme**.  
+  - `lmeForm.Rd`: linked `groupedData` to **nlme**.  
+  - `modelFrame.Rd`: linked `lme`, `nlme`, and `groupedData` to **nlme**.  
+  - `muleMan.Rd`: linked `groupedData` to **nlme**, `mgram` to **ecodist**, and `ecodist` correctly.  
+  - `shiftFrame.Rd`: linked `groupedData` to **nlme**.  
+  - `summary.modelFrame.Rd`: linked `summary.lme` to **nlme**.  
 
-Changes in "shiftFrame": We have used stringAsFactors = TRUE in 
-internal implementation of data.frame().
+## New in BIOdry 0.9  
+- Added labels to items in three files: `Pchron.Rd`, `Prec.Rd`, and `Temp.Rd`.  
 
-New changes in BIOdry V0.7:
-convergence errors have been fixed
+## New in BIOdry 0.8  
+- **Changes in `shiftFrame`**: The internal implementation of `data.frame()` now uses `stringsAsFactors = TRUE`.  
 
-New changes in BIOdry V0.6:
+## New in BIOdry 0.7  
+- Fixed convergence errors.  
 
-Examples of the functions have been changed to solve convergence
-errors.
+## New in BIOdry 0.6  
+- Updated function examples to resolve convergence errors.  
 
+## New in BIOdry 0.5  
+1. Developed five new **S3 methods**:  
+   - `anova.modelFrame`  
+   - `plot.modelFrame`  
+   - `plot.muleMan`  
+   - `plot.wlai`  
+   - `summary.modelFrame`  
+   *(See package documentation.)*  
 
-New changes in BIOdry V0.5:
+2. **Changes in `modelFrame`**:  
+   - Now supports two formats of dendroclimatic records: dendroclimatic chronologies and multilevel data series.  
+   - Improved implementation examples.  
 
-1. Five S3 methods were developed: "anova.modelFrame",
-"plot.modelFrame", "plot.muleMan", "plot.wlai", and
-"summary.modelFrame" (see package documentation).
+3. **Changes in `muleMan`**:  
+   - Improved implementation examples.  
 
-2. Changes in function "modelFrame": This function processes now two
-formats of dendroclimatic records: dendroclimatic chronologies or
-multilevel data series. Examples to implement this function were
-improved (see package documentation).
+4. **New binary datasets** added to `data/` folder:  
+   - `Pchron.RData`, `Prec.RData`, and `Temp.RData` (contain dendroclimatic chronologies).  
 
-3. Changes in function "muleMan": Examples to implement this function
-were improved (see package documentation).
+5. **New function `mUnits`**: Converts metric units in dendroclimatic chronologies.  
 
-4. Three new binary data sets: "Pchron.RData", "Prec.RData", and
-"Temp.RData" were added to examples in data/ folder. These contains
-dendroclimatic chronologies which are described in the package
-documentation.
+6. **Changes in `amod`**:  
+   - Improved routines for allometric scaling.  
 
-5. New "mUnits" function to change metric units in dendroclimatic
-chronologies is added to the package.
+7. **New function `cClclass`**:  
+   - Replaces the old `colclass` function.  
 
-6. Change in function "amod": Routines to develop allometric scaling
-were enhanced (see package documentation).
+## Changes in BIOdry 0.4  
+1. **Changes in `tdForm`**:  
+   - Fixed incorrect formulation of the time-decline form.  
 
-7. New "cClclass" function replaces old "colclass" function (see
-package documentation).
+2. **Changes in `ringLme`**:  
+   - This function was replaced by `frametoLme()` to improve `lme` implementation from the **nlme** package.  
 
-Changes in BIOdry V0.4:
+## Changes in BIOdry 0.3  
+1. **Changes in `shiftFrame`**:  
+   - Updated algorithm to shift ring-data frames into multilevel data frames, fixing an internal error in R < 3.2.0.  
+   - Added new default argument:  
+     ```r
+     lev.nm = c("plot", "tree", "sample")
+     ```  
+     This argument provides names for the factor-level columns in reshaped multilevel data frames.  
 
-1. Changes in function "tdForm": incorrect formulation of this
- time-decline form was fixed (see package documentation).
-
-2. Changes in function "ringLme": This function has been replaced by
-frametoLme() to improve implementation of lme function in nlme package
-(see package documentation).
-
-
-Changes in BIOdry V0.3:
-
-1. Changes in function "shiftFrame": Algorithm to shift ring-data
-   frames into multilevel data frames was changed to fix Internal
-   error message (R < 3.2.0). A new default argument "lev.nm =
-   c('plot','tree','sample')" was added to the function. This argument
-   provides names of the factor-level columns in the reshaped
-   multilevel data frames (see package documentation).
- 
-2. Changes in function "muleMan": Output of this function is now a
-   "groupedData" object. Default plot in the output was removed. The
-   two default plot arguments: "plot.man = TRUE" and "psig = 0.05"
-   were also removed. Users of the package can plot the groupedData
-   object with other trellis-graph functions (see examples in the
-   function).
-
-
-
-
-
-
-
-
-
-
-
+2. **Changes in `muleMan`**:  
+   - Output is now a `groupedData` object.  
+   - Removed the default plot in the output.  
+   - Removed two default plot arguments:  
+     - `plot.man = TRUE`  
+     - `psig = 0.05`  
+   - Users can now plot the `groupedData` object using other trellis-graph functions. *(See function examples.)*  

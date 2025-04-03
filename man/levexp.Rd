@@ -7,14 +7,14 @@ series.}
 \usage{levexp(x, levels)}
 \arguments{
   \item{x}{\code{numeric} vector with names of the vector representing
-the levels to be matched.}
+the \code{levels} to be matched.}
   \item{levels}{\code{data.frame}. Multilevel ecological data series,
-or \code{character} vector of levels.}
+or \code{character} vector of \code{levels}.}
 }
 
-\value{numeric vector with expanded/reduced levels.}
+\value{numeric vector with expanded/reduced \code{levels}.}
 
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

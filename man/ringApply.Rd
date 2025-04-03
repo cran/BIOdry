@@ -3,10 +3,11 @@
 \title{Multilevel apply}
 \description{Wrapper of \code{\link{Map}} to apply functions on multilevel data
 series and preserve factor-level structure in the outputs.}
-\usage{ringApply(rd, lv = 1, fn = "scacum", ...)}
+\usage{ringApply(rd, lv = 1, 
+    fn = "scacum", ...)}
 \arguments{
   \item{rd}{\code{data.frame}. Multileve ecological data series.}
-  \item{lv}{{numeric} position, or {character} name, of an
+  \item{lv}{\code{numeric} position, or \code{character} name, of an
 ecological factor in the processed MEDS.}
   \item{fn}{\code{character} name of the function to be
 evaluated (see details). Default 'scacum'
@@ -31,7 +32,7 @@ drought and tree biomass growth from
 dendrochronological data: A multilevel
 approach. Agric. For. Meteorol.,
 178-179:140-151.}
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

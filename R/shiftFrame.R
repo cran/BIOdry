@@ -138,13 +138,13 @@ shiftFrame <- structure(function#MEDS formatting
 
     return(dt)
 ### When \code{rd} argument is a dendroclimatic chronology (see
-### details) then the output is a \code{\link{groupedData}} object,
+### details) then the output is a \code{\link[nlme]{groupedData}} object,
 ### and viceversa.
 } , ex=function(){
-    ##tree-ring widths formated as a groupedData object:
+    ##tree-ring widths formated as a \code{\link[nlme]{groupedData}} object:
     data(Prings05,envir = environment())
     
-    ## Formatting the groupedData object into a ring-data frame:
+    ## Formatting the \code{\link[nlme]{groupedData}} object into a ring-data frame:
     pwide <- shiftFrame(Prings05, from = 'mm', to = 'mmm')
     str(pwide)
     ## Formatting the ring-data frame into a groupedData object, and

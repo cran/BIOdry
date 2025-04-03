@@ -1,7 +1,7 @@
 frametoLme <- structure(function# LME modeling
 ### LME models are fitted to detrend multilevel ecological data series.
                         ##details<<This function implements
-                        ##\code{\link{lme}} function to fit linear
+                        ##\code{\link[nlme]{lme}} function to fit linear
                         ##mixed-effects models on multilevel
                         ##ecological data series processed by the
                         ##\code{\link{modelFrame}} function. Two kind
@@ -9,11 +9,11 @@ frametoLme <- structure(function# LME modeling
                         ##and 'tdForm'; these characters implement
                         ##functions with same names
                         ##(\code{\link{tdForm}} and
-                        ##\code{\link{lmeForm}}). Other lme formulas
+                        ##\code{\link{lmeForm}}). Other \code{\link[nlme]{lme}} formulas
                         ##can be specified by modifying arguments in
                         ##any of these two functions. After the lme
                         ##models are fitted, they can be extended by
-                        ##implementing methods in \code{\link{nlme}}
+                        ##implementing methods in \code{\link[nlme]{nlme}}
                         ##package.
                         
                         ##references<< Pinheiro J. C.,
@@ -27,7 +27,7 @@ frametoLme <- structure(function# LME modeling
                     ##multilevel ecological data series. If TRUE then
                     ##a data frame of name 'fluc' is added to output
                     ##list.
-    ... ##<< Further arguments to be passed to \code{\link{lme}}
+    ... ##<< Further arguments to be passed to \code{\link[nlme]{lme}}
         ##function or to the lme formula in \code{form}.
 ) {
     pr.cov <- function(form){
@@ -76,7 +76,7 @@ frametoLme <- structure(function# LME modeling
         }
             ## mem[['resid']] <- rset(mem.)
     return(mem)
-### \code{\link{groupedData}} object.
+### \code{\link[nlme]{groupedData}} object.
 } , ex=function() {
     
     ##TRW chronology (mm) and inside-bark radii
@@ -110,7 +110,7 @@ frametoLme <- structure(function# LME modeling
     ## }
     ##a plot of the modeled fluctuations:
     ## \donttest{
-    ## d <- groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
+    ## d <- nlme::groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
     ## plot(d,groups = ~ sample,auto.key = TRUE)
     ## }
     ## A model of aridity:
@@ -126,7 +126,7 @@ frametoLme <- structure(function# LME modeling
     ## cdata <- cf$'model'$'data'
     ## rmod <- frametoLme(cdata,form = 'lmeForm')
     ## summary(rmod$model)
-    ## rk <- groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
+    ## rk <- nlme::groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
     ## plot(rk,ylab = 'detrended AI')
     ## }
 })

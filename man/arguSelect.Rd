@@ -3,7 +3,10 @@
 \title{Argument selection}
 \description{Arguments of specific functions are selected from arbitrary numbers
 and varieties of arguments.}
-\usage{arguSelect(rd = NULL, fun = c("mapply", "ringApply"), ...)}
+\usage{arguSelect(rd = NULL, 
+    fun = c("mapply", 
+        "ringApply"), 
+    ...)}
 \arguments{
   \item{rd}{\code{NULL} or \code{data.frame}. Multilevel
 ecological data series. If \code{NULL} then this
@@ -21,7 +24,7 @@ lists are also extracted and stored again as
 \code{MoreArgs} lists.}
 \value{\code{list} of selected arguments.}
 
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

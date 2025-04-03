@@ -11,8 +11,8 @@ modelFrame <- structure(function #Dendroclimatic-fluctuations modeling
                         ##other FOLM can be implemented to model
                         ##aridity-index fluctuations(see example with
                         ##climatic data). Processed chronologies are
-                        ##detrended with \code{\link{lme}} function
-                        ##and other \code{\link{nlme}} methods
+                        ##detrended with \code{\link[nlme]{lme}} function
+                        ##and other \code{\link[nlme]{nlme}} methods
                         ##. Internal algorithm uses
                         ##\code{\link{shiftFrame}}
                         ##\code{\link{arguSelect}} and
@@ -51,7 +51,7 @@ modelFrame <- structure(function #Dendroclimatic-fluctuations modeling
     
     ... ##<< Further arguments in \code{\link{mUnits}}, or in the
         ##functions for one-level modeling, or in the
-        ##\code{\link{lme}} function/methods, or in the detrending
+        ##\code{\link[nlme]{lme}} function/methods, or in the detrending
         ##formula.
 ) {
     lse <- list(...)
@@ -107,7 +107,7 @@ modelFrame <- structure(function #Dendroclimatic-fluctuations modeling
     class(rd) <- c('modelFrame', class(rd))
     return(rd)
 ### Threefold list with fluctuations in \code{fluc},
-### {\link{groupedData}} object in \code{model}, and model call in
+### {\link[nlme]{groupedData}} object in \code{model}, and model call in
 ### \code{call}.
 } , ex=function() {
     ##TRW chronology (mm) and inside-bark radii

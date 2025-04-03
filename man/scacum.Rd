@@ -3,7 +3,8 @@
 \title{Cummulative-scaled sums}
 \description{This function computes cummulative and scaled sums of time-series
 replicates.}
-\usage{scacum(x, sc.c = NA, rf.t = NA)}
+\usage{scacum(x, sc.c = NA, 
+    rf.t = NA)}
 \arguments{
   \item{x}{\code{numeric} vector of time-series replicates with names
 of the vector being time units.}
@@ -19,7 +20,7 @@ replicates (e.g. tree-ring widths) are scaled
 around reference values (e.g. tree radii).}
 \value{data frame with the original vector, and its scaled-cummulative sums.}
 
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

@@ -2,7 +2,8 @@
 \alias{amod}
 \title{Allometric scaling.}
 \description{Allometric models and parameters are used to scale organic growth.}
-\usage{amod(x, mp = c(1, 1), fun = y ~ a * (x^b))}
+\usage{amod(x, mp = c(1, 1), 
+    fun = y ~ a * (x^b))}
 \arguments{
   \item{x}{\code{numeric} vector.}
   \item{mp}{\code{numeric}. Allometric
@@ -14,15 +15,15 @@ Allometric
 model. To properly
 specify other
 formulas, the
-variables (e.g. x
+variables (e.g. \code{x}
 and y) should
 belong to
 \code{letters[20:26]}.}
 }
 \details{. Allometric models are useful to
 scale size-components of organisms such as
-tree diameters (mp = \code{c(2,1)}) and
-basal areas (mp = \code{c(0.25 *
+tree diameters (\code{mp} = \code{c(2,1)}) and
+basal areas (\code{mp} = \code{c(0.25 *
 pi,2)}). Several parameter groups
 (\code{c(a1,b1,a2,b2, ..., an,bn)}) can be
 recursively processed.  This enables
@@ -31,11 +32,11 @@ variables. For example, above-ground tree
 biomass could be computed from two
 parameter groups for tree-biomass, and
 over-bark diameter scaling.}
-\value{\code{data.frame} of the scaled variable (x) and relative
+\value{\code{data.frame} of the scaled variable (\code{x}) and relative
 increments (csx). These are computed with \code{\link{setdiff}}
 function.}
 
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 

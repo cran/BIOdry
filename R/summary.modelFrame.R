@@ -4,7 +4,7 @@ summary.modelFrame <- structure(function #summarize a modelFrame object
     object, ##<< an object inheriting from class
             ##\code{\link{modelFrame}}.
     ... ##<< additional optional arguments passed to
-        ##\code{\link{summary.lme}} method.
+        ##\code{\link[nlme]{summary.lme}} method.
     
 ) {
         summary(object$'model', ...)

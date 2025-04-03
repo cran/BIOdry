@@ -3,13 +3,14 @@
 \title{Multilevel dendroclimatic correlograms}
 \description{Multivariate correlograms between TRW fluctuations and climatic
 fluctuations.}
-\usage{muleMan(rd, cd, rd.var = NULL, cd.var = NULL, ...)}
+\usage{muleMan(rd, cd, rd.var = NULL, 
+    cd.var = NULL, ...)}
 \arguments{
-  \item{rd}{\code{dataframe} or \code{\link{groupedData}}. TRW
+  \item{rd}{\code{dataframe} or \code{\link[nlme]{groupedData}}. TRW
 fluctuations such as that produced by
 \code{\link{modelFrame}}.}
   \item{cd}{\code{dataframe} or
-\code{\link{groupedData}}. Aridity-index fluctuations such
+\code{\link[nlme]{groupedData}}. Aridity-index fluctuations such
 as that produced by \code{\link{modelFrame}}.}
   \item{rd.var}{\code{character} or \code{NULL}. Column name of
 the TRW fluctuations to be compared. If
@@ -17,13 +18,12 @@ the TRW fluctuations to be compared. If
   \item{cd.var}{\code{character} or \code{NULL}. Column name of
 the aridity-index fluctuations to be compared. If
 \code{NULL} then the first column is used.}
-  \item{\dots}{Further arguments in \code{\link{mgram}}}
+  \item{\dots}{Further arguments in \code{\link[ecodist]{mgram}}}
 }
-\details{Function \code{\link{mgram}} in
-package \code{\link{ecodist}} is implemented to
-compare the dendroclimatic fluctuations. Models
-being compared should have common higher-level
-factors (see example).}
+\details{Function \code{\link[ecodist]{mgram}}
+is implemented to compare the dendroclimatic
+fluctuations. Models being compared should have
+common higher-level factors (see example).}
 \value{\code{data.frame} object of multivariate correlations.}
 \references{Lara W., F. Bravo,
 D. Maguire. 2013. Modeling patterns between
@@ -31,7 +31,7 @@ drought and tree biomass growth from
 dendrochronological data: A multilevel
 approach. Agric. For. Meteorol.,
 178-179:140-151.}
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 
@@ -49,28 +49,28 @@ biom_param <- c(2.87, 0.85, 0.05, 2.5)
 ## Modeling tree-biomass fluctuations while accounting for
 ## within-plot source variability (see defaults in "modelFrame"
 ## function)
- \donttest{
- trwf <- modelFrame(Pchron,
-                    to = 'cm',
-                    MoreArgs = list(mp = c(2,1, biom_param)),
-                    log.t = FALSE,
-                    on.time = FALSE)
- }
+## /donttest{
+## trwf <- modelFrame(Pchron,
+##                    to = 'cm',
+##                    MoreArgs = list(mp = c(2,1, biom_param)),
+##                    log.t = FALSE,
+##                    on.time = FALSE)
+## }
 ## Climatic Records:
 data(Temp,envir = environment())
 data(Prec,envir = environment())
 ## Aridity-index fluctuations:
- \donttest{
-     aif <- modelFrame(rd = list(Prec, Temp),
-                       fn = list('moveYr','wlai'),
-                       lv = list('year','year'),
-                       form = 'lmeForm')
- }
+## /donttest{
+##     aif <- modelFrame(rd = list(Prec, Temp),
+##                       fn = list('moveYr','wlai'),
+##                       lv = list('year','year'),
+##                       form = 'lmeForm')
+## }
 ##Multivariate comparison:
- \donttest{
- mcomp <- muleMan(trwf,
-                     aif,
-                  nperm = 10^3)
- str(mcomp)
- }
+## /donttest{
+## mcomp <- muleMan(trwf,
+##                     aif,
+##                  nperm = 10^3)
+## str(mcomp)
+## }
 }

@@ -3,12 +3,14 @@
 \title{LME formula}
 \description{This function computes LME formulas from multilevel ecological
 data series (MEDS).}
-\usage{lmeForm(rd, prim.cov = FALSE, resp = NULL, covar = NULL, lev.rm = NULL)}
+\usage{lmeForm(rd, prim.cov = FALSE, 
+    resp = NULL, covar = NULL, 
+    lev.rm = NULL)}
 \arguments{
   \item{rd}{\code{data.frame}. Multilevel ecological data series}
   \item{prim.cov}{\code{Logical}: should the LME formula only
 be printed in primary covariate form: '~ cov'?
-If FALSE then a complete form: 'resp ~ covar |
+If FALSE then a complete form: 'resp ~ \code{covar} |
 group' is formulated.}
   \item{resp}{\code{NULL} or \code{character}. Column name of
 the response. If NULL then the name of the first
@@ -21,7 +23,7 @@ vector of levels in the MEDS to be removed from
 the groups.}
 }
 \details{Formulas of the form \code{resp ~ cov
-| group} (see \code{\link{groupedData}}
+| group} (see \code{\link[nlme]{groupedData}}
 function) are computed from MEDS. The formulas
 can be implemented by
 \code{\link{modelFrame}} function to detrend MEDS}
@@ -30,7 +32,7 @@ can be implemented by
 \references{Pinheiro J. C.,
 D. M. Bates. 2000. Mixed-effects models in S
 and S-PLUS. Springer, New York.}
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
 
 
 
