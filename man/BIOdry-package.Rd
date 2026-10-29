@@ -13,7 +13,7 @@ The DESCRIPTION file:
 \packageIndices{BIOdry}
 Maintainer: \packageMaintainer{BIOdry}
 }
-\author{Wilson Lara <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
+\author{Wilson Lara-Henao <wilarhen@gmail.com>, Felipe Bravo <fbravo@pvs.uva.es>}
 
 \keyword{ package }
 

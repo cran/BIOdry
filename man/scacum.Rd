@@ -1,26 +1,46 @@
 \name{scacum}
 \alias{scacum}
-\title{Cummulative-scaled sums}
-\description{This function computes cummulative and scaled sums of time-series
-replicates.}
+\title{scacum}
+\description{This function computes cumulative and optionally scaled sums of ordered
+time-series replicates.}
 \usage{scacum(x, sc.c = NA, 
-    rf.t = NA)}
+    rf.t = NA, lv = NULL, 
+    validate = c("none", 
+        "warn", "stop"))}
 \arguments{
-  \item{x}{\code{numeric} vector of time-series replicates with names
-of the vector being time units.}
-  \item{sc.c}{\code{numeric} constant. Scaling constant.  If
-\code{NA} then the computed cumulative sums are not
-scaled.}
-  \item{rf.t}{\code{NA}, or \code{numeric} constant. Reference
-time of the scaling constant. If \code{NA} then
-maximum time in vector-name range is used.}
+  \item{x}{Numeric vector of time-series replicates, or a data frame.}
+  \item{sc.c}{Numeric scaling constant. If \code{NA}, cumulative sums
+are not scaled.}
+  \item{rf.t}{Reference time for scaling. If \code{NA}, the last time
+value of each ordered block is used. If given, the data
+must have a \code{year}, \code{hydro_year_id} or
+\code{time} column; otherwise \code{scacum()} stops.}
+  \item{lv}{Optional split level for multilevel data frames. Can be
+\code{NULL}, character, or numeric, and is resolved through
+\code{slitFrame()}.}
+  \item{validate}{Validation mode.}
 }
-\details{Cummulative sums of time-series
-replicates (e.g. tree-ring widths) are scaled
-around reference values (e.g. tree radii).}
-\value{data frame with the original vector, and its scaled-cummulative sums.}
+\details{Cumulative sums of time-series replicates
+(e.g. tree-ring widths) can be computed on a single
+ordered block, or within multilevel data frames after
+splitting by a specified level. For data frames,
+\code{scacum()} orders each block on available time
+variables before computing cumulative sums and returns
+the original data with an added \code{csx} column.
+The value column is \code{x}, the package's column
+name; a response declared with
+\code{\link{defineDataRoles}} takes precedence.
+Without either, \code{scacum()} stops.
+The time variables are found by the package's
+column names: \code{year} (or \code{hydro_year_id}
+from \code{\link{moveYr}}), \code{month} and
+\code{time}; \code{rf.t} refers to the first of
+\code{hydro_year_id}, \code{year} and \code{time}
+that is present.}
 
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 
@@ -28,10 +48,8 @@ around reference values (e.g. tree radii).}
 \examples{
 x <- c(0.79,0.32,0.53,0.43,0.18)
 names(x) <- 1948:1952
-scacum(x,sc.c = 4,rf.t = 1951)
+scacum(x, sc.c = 4, rf.t = 1951)
 
-##If sc.c = NA then cummulative values are scaled arround
-##max(cumsum(x)):
 max(cumsum(x))
-scacum(x,NA,1951)
+scacum(x, NA, 1951)
 }

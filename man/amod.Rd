@@ -1,42 +1,74 @@
 \name{amod}
 \alias{amod}
-\title{Allometric scaling.}
-\description{Allometric models and parameters are used to scale organic growth.}
+\title{amod}
+\description{Allometric scaling.
+Allometric models and parameters are used to scale organic growth.}
 \usage{amod(x, mp = c(1, 1), 
-    fun = y ~ a * (x^b))}
+    fun = y ~ a * (x^b), 
+    lv = NULL, validate = c("none", 
+        "warn", "stop"))}
 \arguments{
-  \item{x}{\code{numeric} vector.}
+  \item{x}{\code{numeric} vector or
+<<\code{data.frame}.}
   \item{mp}{\code{numeric}. Allometric
-parameters. Default
-\code{c(1,1)} (see
-details).}
-  \item{fun}{\code{formula}.
-Allometric
-model. To properly
-specify other
-formulas, the
-variables (e.g. \code{x}
-and y) should
-belong to
-\code{letters[20:26]}.}
+parameters. Several groups
+may be supplied recursively.}
+  \item{fun}{\code{formula}.}
+  \item{lv}{\code{NULL}, \code{character},
+<<or \code{numeric}. Grouping
+level(s) to split multilevel
+data frames before scaling.}
+  \item{validate}{Validation mode.}
 }
-\details{. Allometric models are useful to
-scale size-components of organisms such as
-tree diameters (\code{mp} = \code{c(2,1)}) and
-basal areas (\code{mp} = \code{c(0.25 *
-pi,2)}). Several parameter groups
-(\code{c(a1,b1,a2,b2, ..., an,bn)}) can be
-recursively processed.  This enables
-computation of complex organic
-variables. For example, above-ground tree
-biomass could be computed from two
-parameter groups for tree-biomass, and
-over-bark diameter scaling.}
-\value{\code{data.frame} of the scaled variable (\code{x}) and relative
-increments (csx). These are computed with \code{\link{setdiff}}
-function.}
+\details{. This patched version keeps the
+original block-level helper behavior, but it
+also works on multilevel data frames. When a
+data frame is supplied with \code{lv}, the
+function first resolves the grouping
+hierarchy from \code{lv}, then uses
+\code{slitFrame()} to materialize those
+groups, orders rows within each block on the
+available time variables that remain after
+splitting, and finally applies the
+allometric model to each ordered block.
+Character and numeric \code{lv} values are
+both supported. Numeric \code{lv} values are
+interpreted as positions in the detected
+nesting structure, whereas character values
+are matched to grouping names directly.
+Cumulative organic growth is taken from
+\code{csx} when available. If \code{csx} is
+absent but \code{x} or \code{trw} is
+present, cumulative growth is derived with
+\code{cumsum()} after time ordering only for
+the internal scaling step, so the function
+can operate on simpler long-format tree-ring
+tables. When the allometric model is applied,
+the returned object always contains both the
+scaled increments (\code{x}) and the scaled
+cumulative growth state (\code{csx}). This
+keeps the transformed increment and state
+variables paired explicitly after scaling.
+The first transformed increment is the change
+from the size before the first ring (\code{csx}
+minus the first ring width, or zero when no ring
+widths are available) to the first transformed
+cumulative value, so identity settings such as
+\code{mp = c(1,1)} preserve the original
+increments rather than introducing an initial
+\code{NA}. Direct use
+on climatic tables is only appropriate when a
+meaningful cumulative source is available or
+can be derived before scaling. The returned
+data frame preserves the original row order
+after block-wise processing and keeps scaled
+outcomes before time and grouping columns.}
+\value{\code{data.frame} of the scaled variable (\code{x}) and cumulative
+scaled growth (csx). For multilevel data frames, these are
+computed within each ordered split block.}
 
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 

@@ -1,0 +1,13 @@
+bibentry(
+  bibtype = "Article",
+  title = "Multilevel analysis of dendroclimatic series with the {R}-package {BIOdry}",
+  author = c(person("Wilson", "Lara"),
+             person("Stella", "Bogino"),
+             person("Felipe", "Bravo")),
+  journal = "PLoS ONE",
+  year = "2018",
+  volume = "13",
+  number = "5",
+  pages = "e0196923",
+  doi = "10.1371/journal.pone.0196923"
+)

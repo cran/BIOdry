@@ -4,92 +4,135 @@
 \description{LME models are fitted to detrend multilevel ecological data series.}
 \usage{frametoLme(rd, form = "lmeForm", 
     res.data = TRUE, 
+    validate = c("none", 
+        "warn", "stop"), 
     ...)}
 \arguments{
   \item{rd}{\code{data.frame}. Multilevel ecological data series.}
   \item{form}{\code{character}. Any of two lme formulas:
-'lmeForm' and 'tdForm' (see details).}
-  \item{res.data}{\code{logical}. Save residuals as a
-multilevel ecological data series. If TRUE then
-a data frame of name 'fluc' is added to output
-list.}
-  \item{\dots}{Further arguments to be passed to \code{\link[nlme]{lme}}
-function or to the lme formula in \code{form}.}
+\code{"lmeForm"} and \code{"tdForm"}. A formula
+string containing \code{~} is used directly. If
+\code{NULL}, the input data are returned unchanged.}
+  \item{res.data}{\code{logical}. Save residuals as a multilevel
+ecological data series. If \code{TRUE} then a data
+frame of name \code{"fluc"} is added to output. Its
+residuals are matched to the model-data rows by row
+label, so each residual keeps its own time and
+grouping values.}
+  \item{validate}{\code{character}. Optional
+validation mode.}
+  \item{\dots}{Further arguments passed to \code{\link[nlme]{lme}} or to the
+formula helper named in \code{form}.}
 }
 \details{This function implements
-\code{\link[nlme]{lme}} function to fit linear
-mixed-effects models on multilevel
-ecological data series processed by the
-\code{\link{modelFrame}} function. Two kind
-of model formulas can be fitted: 'lmeForm'
-and 'tdForm'; these characters implement
-functions with same names
-(\code{\link{tdForm}} and
-\code{\link{lmeForm}}). Other \code{\link[nlme]{lme}} formulas
-can be specified by modifying arguments in
-any of these two functions. After the lme
-models are fitted, they can be extended by
-implementing methods in \code{\link[nlme]{nlme}}
-package.}
-\value{\code{\link[nlme]{groupedData}} object.}
-\references{Pinheiro J. C.,
-D. M. Bates. 2000. Mixed-effects models in S
-and S-PLUS. Springer, New York.}
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+\code{\link[nlme]{lme}} to fit linear mixed-effects
+models on multilevel ecological data series. When
+\code{form} is a character without a tilde it is
+resolved through the named formula helper, typically
+\code{\link{lmeForm}} or \code{\link{tdForm}}; when
+it already contains a tilde it is used directly as a
+formula. When \code{form = NULL}, the function now
+returns the processed input data unchanged, which makes
+direct \code{ringApply()} pipelines safe. Before model
+fitting, the function resolves the final formula and
+keeps only the variables used by that formula and the
+grouping columns. Rows with a missing value in any of
+them are dropped from the fit without a message (use
+\code{validate = "warn"} to be told how many). For
+example, after \code{ringApply(Prings05, lv = 2, fn =
+"rtimes")} the 16 rows where \code{\link{rtimes}} gives
+no time are not in a fit that uses \code{time}, so the
+model has 992 of the 1008 rows. Missing values in unused
+columns, such as an alternative time index, do not
+drop rows. The returned object receives
+class \code{"frametoLme"}, which enables dedicated
+\code{print()} and \code{summary()} methods.
+
+Unless a random part is passed through \code{...},
+it is \code{pdDiag} of the whole right-hand side of the
+fixed formula: every fixed term, including covariates
+written into a formula string, gets an uncorrelated
+random effect at each grouping level. When a level has
+very few groups, the default random part can give a
+singular fit (variance components near zero) with
+inflated standard errors of the fixed effects; a simpler
+random part can then be given through \code{...}. In
+the example, the bundled data (2 plots x 2 trees x 2
+cores) support a tree intercept and a tree-level
+\code{log(csx)} slope only.
+
+With \code{form = "tdForm"}, the time term is linear by
+default or logarithmic with \code{log.t = TRUE} (passed
+through \code{...}); both are Zeide forms with the same
+number of parameters, and the example compares them by
+AIC under \code{method = "ML"}. Within cores,
+\code{log(csx)} and the time term are strongly
+correlated (r about 0.95 for time and 0.99 for ln(time)
+on the bundled data), so their separate standard errors
+depend on the random part.
+
+Whole-number columns such as \code{year} are
+treated as time, not as groups (see
+\code{\link{cClass}}). To use year as a random
+grouping level of a data frame \code{d}, either
+declare it, as in \code{defineDataRoles(d, time =
+"time", groups = c("year", "plot", "tree",
+"sample"))}, or add a factor copy, as in
+\code{d$fyear <- factor(d$year)}, and give
+\code{frametoLme()} a formula string whose
+grouping part names it, such as
+\code{"log(x) ~ log(csx) + time | year"}. A factor
+copy becomes a grouping column in the default
+formulas, so name the grouping levels explicitly
+or remove the copy with \code{lev.rm}.}
+\value{\code{list} of class \code{"frametoLme"} with at least
+components \code{model} and \code{call}, and optionally
+\code{fluc}: Pearson residuals at every grouping level, each
+matched by row label to its row of the model data and returned
+with that row's time and grouping columns. If a correlation or
+variance structure is passed to \code{lme} through \code{...},
+these remain Pearson residuals, not normalized residuals.}
+\references{Pinheiro J. C., D. M. Bates. 2000.
+Mixed-effects models in S and S-PLUS. Springer,
+New York.}
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 
 
 \examples{
-
-##TRW chronology (mm) and inside-bark radii
-data(Pchron,envir = environment())
-
-## Parameters of allometric model to compute Diameter at Breast
-## Height over bark (DBH, cm) from diameter inside bark (dib, cm)
-## and Total Tree Biomass (TTB, kg tree -1 ) from DBH (Lara
-## et. al. 2013):
-biom_param <- c(2.87, 0.85, 0.05, 2.5)
-
-## Modeling tree-biomass fluctuations while accounting for
-## within-plot source variability (see defaults in "modelFrame"
-## function)
-## \\donttest{
-## trwf <- modelFrame(Pchron,
-##                    to = 'cm',
-##                    MoreArgs = list(mp = c(2,1, biom_param)),
-##                    log.t = FALSE,
-##                    on.time = FALSE)
-## }
-## Detrending the fluctuations by fitting a (l)td-form model
-## with Maximum-likelihood method (ML):
-## \\donttest{
-## pdata <- trwf$'model'$'data'
-## rlme <- frametoLme(pdata,
-##                    form = 'tdForm',
-##                    method = 'ML',
-##                    log.t = TRUE)
-## summary(rlme$model)
-## }
-##a plot of the modeled fluctuations:
-## \\donttest{
-## d <- nlme::groupedData(lmeForm(rlme$fluc,lev.rm = 1),data = rlme$fluc)
-## plot(d,groups = ~ sample,auto.key = TRUE)
-## }
-## A model of aridity:
-## \\donttest{
-## cf <- modelFrame(PTclim05,
-##                  lv = list('year','year'),
-##                  fn = list('moveYr','wlai'),
-##                  form = NULL)
-## summary(cf)
-## }
-## An lme model of aridity at 'plot' level:
-## \\donttest{
-## cdata <- cf$'model'$'data'
-## rmod <- frametoLme(cdata,form = 'lmeForm')
-## summary(rmod$model)
-## rk <- nlme::groupedData(lmeForm(rmod$fluc),data=rmod$fluc)
-## plot(rk,ylab = 'detrended AI')
-## }
+## tree-ring widths (Prings05) and radii measured in 2003 (Pradii03):
+## relative time within trees, then cumulative growth scaled to the radii
+data(Prings05, envir = environment())
+data(Pradii03, envir = environment())
+dfm2 <- Prings05 |>
+    ringApply(lv = 2, fn = 'rtimes') |>
+    ringApply(lv = 'sample', sc.c = Pradii03, rf.t = 2003,
+              fn = 'scacum')
+## the bundled data are a small demonstration set (2 plots x 2 trees x
+## 2 cores) that supports variation among trees only: a tree intercept and
+## a tree-level log(csx) slope (tree labels are unique across plots here,
+## otherwise nest them, | plot/tree)
+## both time forms are Zeide forms, f(t) = t (log.t = FALSE, the default)
+## and f(t) = ln t (log.t = TRUE); fit both with ML and let the fit choose
+fit_t <- dfm2 |>
+    frametoLme(form = 'log(x) ~ log(csx) + time | tree',
+               random = pdDiag(~ log(csx)), method = 'ML')
+fit_lnt <- dfm2 |>
+    frametoLme(form = 'log(x) ~ log(csx) + log(time) | tree',
+               random = pdDiag(~ log(csx)), method = 'ML')
+anova(fit_t, fit_lnt)
+## here the data prefer f(t) = ln t (lower AIC and BIC); refit it with REML
+fit <- dfm2 |>
+    frametoLme(form = 'log(x) ~ log(csx) + log(time) | tree',
+               random = pdDiag(~ log(csx)))
+head(fit$fluc)
+print(summary(fit))
+## for comparison, the default random part puts the intercept, log(csx)
+## and ln(time) at plot, tree and sample; here it gives near-zero variance
+## components
+fit0 <- dfm2 |> frametoLme(form = 'tdForm', log.t = TRUE)
+VarCorr(fit0$model)
+c(tree = AIC(fit$model), default = AIC(fit0$model))
 }

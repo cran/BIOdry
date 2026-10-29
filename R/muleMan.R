@@ -55,22 +55,25 @@ muleMan <- structure(function#Multilevel dendroclimatic correlograms
     }
     flf. <- unlist(Map(function(x)
         any(x%in%cd[,cf(cd)]),
-        rd[,cf(rd)]))
+        rd[,cf(rd), drop = FALSE]))
     fli. <- unlist(Map(function(x)
         any(x%in%cd[,cf(cd, 'I')]),
-        rd[,cf(rd, 'I')]))
+        rd[,cf(rd, 'I'), drop = FALSE]))
     fsl <- c(fli.,flf.)
     nrd <- names(fsl)[fsl]
 
     ncd <- cClass(cd, c('integer', 'factor'))
     
     fm <- function(x,...){
-        tme <- merge(x,cd,by.x = nrd, by.y = ncd)
+        ## value columns present in both inputs (e.g. plot.res) get suffixes
+        tme <- merge(x,cd,by.x = nrd, by.y = ncd, suffixes = c('.rd', '.cd'))
         tme <- na.omit(ford(tme))
         fny <- function(x,nm){
             data.frame(x[,nm])}
-        tmw <- fny(tme,cd.var)
-        tmt <- fny(tme,rd.var)
+        cdv <- if(cd.var %in% names(tme)) cd.var else paste0(cd.var, '.cd')
+        rdv <- if(rd.var %in% names(tme)) rd.var else paste0(rd.var, '.rd')
+        tmw <- fny(tme,cdv)
+        tmt <- fny(tme,rdv)
         spd <- dist(tmw)
         spp <- dist(tmt)
         man <- mgram(spp,spd,...)
@@ -82,24 +85,19 @@ muleMan <- structure(function#Multilevel dendroclimatic correlograms
         return(dman)}
     
     tmp <- Map(function(x,...)fm(x,...),tmp0,...)
-    ## lsdfn add levels in rd to mancor
-    lsdfn <- function(mancor,rd){
-        class(rd)
-        rn <- do.call(rbind,mancor)
-        code. <- rownames(rn)
+    ## lsdfn adds to mancor the grouping labels of each block, taken from
+    ## the block's own rows rather than parsed from the block names, whose
+    ## level order depends on the column order of rd
+    lsdfn <- function(mancor, blocks){
         revn <- cClass(rd, 'factor')
-        codes. <- do.call(rbind,
-                          strsplit(code.,'\\.'))[
-           ,1:length(revn)]
-        codes. <- data.frame(codes.)
-        codes. <- codes.[,rev(names(codes.))]
-        codes. <- lapply(codes.,as.factor)
-        names(codes.) <- revn
-        rn <- cbind(rn,codes.)
+        rn <- do.call(rbind,mancor)
+        codes. <- do.call(rbind, Map(function(m, b)
+            b[rep(1L, nrow(m)), revn, drop = FALSE], mancor, blocks))
+        rn <- cbind(rn, as.data.frame(codes.))
         rownames(rn) <- NULL
         return(rn)}
     ## adding levels in rd to tmp
-    tmp <- lsdfn(tmp,rd)    
+    tmp <- lsdfn(tmp, tmp0)
     ## order data in tmp
     tmp <- ford(tmp,nm = 'lag')
     tmp <- groupedData(
@@ -109,40 +107,24 @@ muleMan <- structure(function#Multilevel dendroclimatic correlograms
     return(md)
 ### \code{data.frame} object of multivariate correlations.
 } , ex=function() {
-    ##TRW chronology (mm) and inside-bark radii
-    data(Pchron,envir = environment())
-    
-    ## Parameters of allometric model to compute Diameter at Breast
-    ## Height over bark (DBH, cm) from diameter inside bark (dib, cm)
-    ## and Total Tree Biomass (TTB, kg tree -1 ) from DBH (Lara
-    ## et. al. 2013):
+    ## ring-width chronologies (mm) of eight cores and the allometric
+    ## parameters of the modelFrame example
+    data(Pchron, envir = environment())
     biom_param <- c(2.87, 0.85, 0.05, 2.5)
-
-    ## Modeling tree-biomass fluctuations while accounting for
-    ## within-plot source variability (see defaults in "modelFrame"
-    ## function)
-    ## /donttest{
-    ## trwf <- modelFrame(Pchron,
-    ##                    to = 'cm',
-    ##                    MoreArgs = list(mp = c(2,1, biom_param)),
-    ##                    log.t = FALSE,
-    ##                    on.time = FALSE)
-    ## }
-    ## Climatic Records:
-    data(Temp,envir = environment())
-    data(Prec,envir = environment())
-    ## Aridity-index fluctuations:
-    ## /donttest{
-    ##     aif <- modelFrame(rd = list(Prec, Temp),
-    ##                       fn = list('moveYr','wlai'),
-    ##                       lv = list('year','year'),
-    ##                       form = 'lmeForm')
-    ## }
-    ##Multivariate comparison:
-    ## /donttest{
-    ## mcomp <- muleMan(trwf,
-    ##                     aif,
-    ##                  nperm = 10^3)
-    ## str(mcomp)
-    ## }
-    })
+    ## tree-biomass fluctuations
+    trwf <- Pchron |>
+        modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
+                   log.t = FALSE, on.time = FALSE)
+    ## aridity-index fluctuations; hydrological years labeled by the year
+    ## in which they end
+    data(Prec, envir = environment())
+    data(Temp, envir = environment())
+    aif <- list(Prec, Temp) |>
+        modelFrame(fn = list('moveYr', 'wlai'), lv = list('year', 'year'),
+                   form = 'lmeForm')
+    ## Mantel correlograms between the two, for each core (100
+    ## permutations to keep the example short)
+    set.seed(1)
+    mcomp <- muleMan(trwf, aif, nperm = 100)
+    head(mcomp$mmgram)
+})

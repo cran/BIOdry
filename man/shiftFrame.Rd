@@ -1,59 +1,82 @@
 \name{shiftFrame}
 \alias{shiftFrame}
-\title{MEDS formatting}
+\title{shiftFrame}
 \description{dendroclimatic chronologies (trw, and climatic data) are formatted
 into multilevel ecological data series. SI units of continuous
 variables in the data can be transformed.}
 \usage{shiftFrame(rd, f.nm = NULL, 
     x.nm = names(rd)[1L], 
-    t.nm = "year", ...)}
+    t.nm = "year", split_pattern = "\\\.", 
+    level_sep = ".", 
+    ...)}
 \arguments{
-  \item{rd}{\code{data.frame} or \code{list}. Dendroclimatic
-chronology DC (see details) or list of two DCs
-(e.g. precipitation and temperature records), or multilevel
-ecological data series (MEDS).}
-  \item{f.nm}{\code{character} vector. In the case of formatting
-ring-data frames, column names of the factors in
-the new MEDS. If \code{NULL} then this argument is
-recycled from attributes in \code{rd}. If such an
-attribute is also \code{NULL} then a sequence of
-codes (F1, F2, \code{...}, Fn) is used.}
-  \item{x.nm}{\code{character}. In the case of
-formatting MEDS, name of the variable to be
-reshaped. Default uses name of first
-variable of \code{rd}.}
-  \item{t.nm}{\code{character}.In the case of formatting MEDS,
-name of the time-units variable .}
-  \item{\dots}{Further arguments in \code{\link{mUnits}}.}
+  \item{rd}{rd }
+  \item{f.nm}{f.nm }
+  \item{x.nm}{x.nm }
+  \item{t.nm}{t.nm }
+  \item{split_pattern}{split_pattern }
+  \item{level_sep}{level_sep }
+  \item{\dots}{\dots }
 }
-\details{Row names of dendroclimatic data
-frames are time units (e.g. years). Column
-names are dot-separated labels representing
-the hierarchy of ecological or time-units
-factors, where the higher levels are defined
-first and the lower levels after. For
-example, code 'P16106.17' is the column name
-of core 'a' in tree '17' in plot
-'P16106'. Labels containing monthly
-abbreviations are also formatted.}
-\value{When \code{rd} argument is a dendroclimatic chronology (see
-details) then the output is a \code{\link[nlme]{groupedData}} object,
-and viceversa.}
+\details{Wide BIOdry data may represent either
+tree-ring or climatic series. The patched
+implementation prefers explicit time columns in
+wide data, that is, the column named by
+\code{t.nm}, whole-number numeric columns and the
+\code{month} column, and then treats the remaining value
+columns as hierarchy-encoded series labels. This
+rule applies to both climate and tree-ring wide
+data. Hierarchy levels are parsed from value-column
+names with the configurable regular expression
+given by \code{split_pattern}. The default keeps
+the historical dot-separated BIOdry convention.
 
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+When long data are shifted to wide format, time
+variables are retained as independent columns
+rather than being hidden in row names. Value
+columns are then rebuilt from the grouping
+hierarchy using \code{level_sep}. When long
+data contain more than one measured variable,
+for example \code{tm} and \code{pm}, the wide
+columns are prefixed by the measure name, such as
+\code{tm.z1} or \code{pm.z1}, so the reverse
+conversion can recover all value variables. This makes wide
+to long round-trips safer for data with more than
+one time variable, such as \code{year + month} in
+climate series or \code{year + cambial_age} in
+tree-ring series.
+
+Row-name time is still accepted as a backward-
+compatibility fallback for older BIOdry wide
+chronologies. In that case, row names are used only
+when explicit time columns are absent.
+
+When a wide object produced by \code{shiftFrame()}
+is shifted back to long format, the stored metadata
+for \code{x.nm}, \code{f.nm}, \code{t.nm}, and
+\code{time_cols} take precedence over the type rule
+(see \code{\link{cClass}}).
+This makes wide-to-long round-trips deterministic.
+For single-response long results that are returned as
+\code{groupedData}, the grouping formula is built from
+the actual response variable and the stored hierarchy,
+rather than being derived again from column types.
+Long-format outputs are ordered explicitly as record
+or measured variables first, then time variables,
+and finally grouping factors from the lowest
+resolved hierarchy level to the broadest one.}
+
+
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 
 
 \examples{
-##tree-ring widths formated as a \\code{\\link[nlme]{groupedData}} object:
-data(Prings05,envir = environment())
-
-## Formatting the \\code{\\link[nlme]{groupedData}} object into a ring-data frame:
+data(Prings05, envir = environment())
 pwide <- shiftFrame(Prings05, from = 'mm', to = 'mmm')
 str(pwide)
-## Formatting the ring-data frame into a groupedData object, and
-## changing SI units from micrometers to milimeters:
-plong <- shiftFrame(pwide,from = 'mmm', to = 'mm')
+plong <- shiftFrame(pwide, from = 'mmm', to = 'mm')
 plot(plong)
 }

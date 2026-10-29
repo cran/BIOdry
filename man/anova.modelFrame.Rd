@@ -1,80 +1,50 @@
 \name{anova.modelFrame}
 \alias{anova.modelFrame}
 \title{Compare modelFrame objects}
-\description{Models in \code{\link{modelFrame}} lists are compared with
-\code{\link[nlme]{anova.lme}} method.}
+\description{Models in \code{\link{modelFrame}} objects are compared with an
+ANOVA method when the terminal fit is based on
+\code{\link[nlme]{lme}}.}
 \usage{\method{anova}{modelFrame}(object, 
     ..., test, type, 
     adjustSigma, Terms, 
     L, verbose)}
 \arguments{
-  \item{object}{an \code{object} inheriting from class "modelFrame".}
-  \item{\dots}{other optional fitted model objects inheriting from
-classes "modelFrame", "lme", "lm", among other (see
-\code{\link[nlme]{anova.lme}}).}
-  \item{test}{optional character string specifying the \code{type} of sum of
-squares to be used in F-tests for the terms in the model
-(see \code{\link[nlme]{anova.lme}}).}
-  \item{type}{optional character string specifying the \code{type} of sum
-of squares to be used in F-tests for the terms in the
-model (see \code{\link[nlme]{anova.lme}}).}
-  \item{adjustSigma}{If TRUE and the estimation method used to obtain
-\code{object} was maximum likelihood, the residual
-standard error is multiplied by sqrt(nobs/(nobs -
-npar)), converting it to a REML-like estimate (see
-\code{\link[nlme]{anova.lme}}).}
-  \item{Terms}{optional integer or character vector specifying which
-terms in the model should be jointly tested to be zero
-using a Wald F-test (see \code{\link[nlme]{anova.lme}}).}
-  \item{L}{optional numeric vector or array specifying linear
-combinations of the coefficients in the model that should be
-tested to be zero (see \code{\link[nlme]{anova.lme}}).}
-  \item{verbose}{optional logical value. If TRUE, the calling
-sequences for each fitted model \code{object} are printed with
-the rest of the output, being omitted if \code{verbose} =
-FALSE (see \code{\link[nlme]{anova.lme}}).}
+  \item{object}{An \code{object} inheriting from class \code{\link{modelFrame}}.}
+  \item{\dots}{Other optional fitted model objects inheriting from classes
+\code{"modelFrame"}, \code{"lme"}, \code{"lm"}, among
+others accepted by \code{\link[nlme]{anova.lme}}.}
+  \item{test}{test }
+  \item{type}{type }
+  \item{adjustSigma}{adjustSigma }
+  \item{Terms}{Terms }
+  \item{L}{L }
+  \item{verbose}{verbose }
 }
 
-\value{data frame inheriting from class "anova.lme".}
-\references{Lara W., F. Bravo,
-D. Maguire. 2013. Modeling patterns between
-drought and tree biomass growth from
-dendrochronological data: A multilevel
-approach. Agric. For. Meteorol.,
-178-179:140-151.}
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+\value{A data frame inheriting from class \code{"anova.lme"} when the
+underlying terminal fit is mixed-effects.}
+
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 
 
 \examples{
-##TRW chronology (mm) and inside-bark radii
-data(Pchron,envir = environment())
-
-## Parameters of allometric model to compute Diameter at Breast
-## Height over bark (DBH, cm) from diameter inside bark (dib, cm)
-## and Total Tree Biomass (TTB, kg tree -1 ) from DBH (Lara
-## et. al. 2013):
+## ring-width chronologies of eight cores and the allometric
+## parameters of the modelFrame example
+data(Pchron, envir = environment())
 biom_param <- c(2.87, 0.85, 0.05, 2.5)
-
-## Modeling tree-biomass fluctuations while accounting for
-## within-plot source variability (see defaults in "modelFrame"
-## function)
-## \\donttest{
-## trwf <- modelFrame(Pchron,
-##                    to = 'cm',
-##                    MoreArgs = list(mp = c(2,1, biom_param)),
-##                    log.t = FALSE,
-##                    on.time = FALSE)
-## }    
-## Fitting a single linear regression of the "tdForm" formula
-## without random effects to the tree-biomass data:
-## \\donttest{
-## trwfl <- lm(log(x) ~ log(csx) + year,
-##             data = trwf$'model'$'data')
-## }
-## Comparing model likelihoods with anova method:
-## \\donttest{
-##     anova(trwf, trwfl)
-## }
+## the biomass model with the two Zeide time forms, f(t) = t and
+## f(t) = ln t, fitted by maximum likelihood
+m_t <- Pchron |>
+    modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
+               log.t = FALSE, method = 'ML')
+m_lnt <- Pchron |>
+    modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
+               log.t = TRUE, method = 'ML')
+## sequential F tests of the fixed effects of one model
+anova(m_t)
+## both forms have the same number of parameters: compare AIC and BIC
+anova(m_t, m_lnt)
 }

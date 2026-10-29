@@ -6,7 +6,8 @@ and varieties of arguments.}
 \usage{arguSelect(rd = NULL, 
     fun = c("mapply", 
         "ringApply"), 
-    ...)}
+    ..., validate = c("none", 
+        "warn", "stop"))}
 \arguments{
   \item{rd}{\code{NULL} or \code{data.frame}. Multilevel
 ecological data series. If \code{NULL} then this
@@ -16,6 +17,7 @@ argument is ignored.}
 names.}
   \item{\dots}{Further arguments not necessarily contained in the
 processed function(s).}
+  \item{validate}{validate }
 }
 \details{Closures with ellipsis terms use this
 function to extract and pass arguments to
@@ -24,7 +26,8 @@ lists are also extracted and stored again as
 \code{MoreArgs} lists.}
 \value{\code{list} of selected arguments.}
 
-\author{Wilson Lara <wilarhen@gmail.com> [aut, cre] (<https://orcid.org/0000-0003-3527-1380>), Felipe Bravo <fbravo@pvs.uva.es> [aut] (<https://orcid.org/0000-0001-7348-6695>)}
+\author{Wilson Lara-Henao [aut, cre] (ORCID: <https://orcid.org/0000-0003-3527-1380>),
+Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 
 
 
@@ -34,7 +37,7 @@ lists are also extracted and stored again as
 ##Multilevel ecological data series of tree-ring widths:
 data(Prings05,envir = environment())
 ## Radial increments measured on 2003:
-data(Pradii03,envir = environment())    
+data(Pradii03,envir = environment())
 
 ## Selection of arguments in some functions:
 ar1 <- arguSelect(fun = c('amod'),
@@ -69,6 +72,6 @@ ar5 <- arguSelect(rd = Prings05,
                   rf.t = rep(2003:2011),
                   MoreArgs = list(only.dup = TRUE,
                                   mp = c(0.5,1)))
-str(ar5)    
+str(ar5)
 
 }
