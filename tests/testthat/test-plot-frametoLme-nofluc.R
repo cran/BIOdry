@@ -2,6 +2,8 @@
 ## rebuild the residual fluctuations from the model and plot them; it failed
 ## with "subscript out of bounds" on the one-sided grouping formula.
 ## Bundled data only: Prings05, Pradii03, Prec, Temp.
+## The fits use the single-level random parts of helper-fits.R; the
+## three-level default route is checked in test-default-route-3-levels.R.
 data(Prings05, package = "BIOdry", envir = environment())
 data(Pradii03, package = "BIOdry", envir = environment())
 data(Prec, package = "BIOdry", envir = environment())
@@ -29,8 +31,8 @@ test_that("plot() works on a fit without $fluc and shows the same points", {
     rd <- rings_rtimes_scacum()
     pdf(NULL)
     on.exit(dev.off(), add = TRUE)
-    with_fluc <- plot(frametoLme(rd, form = "tdForm"), print_trellis = FALSE)
-    without <- plot(frametoLme(rd, form = "tdForm", res.data = FALSE),
+    with_fluc <- plot(fit_tree(rd, "time"), print_trellis = FALSE)
+    without <- plot(fit_tree(rd, "time", res.data = FALSE),
                     print_trellis = FALSE)
     expect_s3_class(without, "trellis")
     a <- panel_points(with_fluc)
@@ -44,7 +46,6 @@ test_that("plot() works without $fluc on a one-level model", {
                     lv = list("year", "year"), form = NULL)
     pdf(NULL)
     on.exit(dev.off(), add = TRUE)
-    tr <- plot(frametoLme(d, form = "lmeForm", res.data = FALSE),
-               print_trellis = FALSE)
+    tr <- plot(fit_climate(d, res.data = FALSE), print_trellis = FALSE)
     expect_s3_class(tr, "trellis")
 })

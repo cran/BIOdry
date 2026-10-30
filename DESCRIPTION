@@ -1,8 +1,8 @@
 Package: BIOdry
 Type: Package
 Title: Multilevel Modeling of Dendroclimatical Fluctuations
-Version: 0.9.5
-Date: 2026-10-27
+Version: 0.9.6
+Date: 2026-10-29
 Authors@R: 
     c(person(given = "Wilson",
              family = "Lara-Henao",
@@ -35,6 +35,6 @@ NeedsCompilation: no
 Author: Wilson Lara-Henao [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-3527-1380>),
   Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)
-Packaged: 2026-10-29 07:18:32 UTC; wilar
+Packaged: 2026-10-30 11:25:52 UTC; wilar
 Repository: CRAN
-Date/Publication: 2026-10-29 08:50:36 UTC
+Date/Publication: 2026-10-30 15:30:37 UTC

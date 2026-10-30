@@ -25,9 +25,11 @@ Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 \examples{
 data(Pchron, envir = environment())
 biom_param <- c(2.87, 0.85, 0.05, 2.5)
+## the biomass model on year with a random intercept per tree
 s <- Pchron |>
     modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-               log.t = FALSE, on.time = FALSE) |>
+               form = 'log(x) ~ log(csx) + year | tree',
+               random = pdDiag(~ 1)) |>
     summary()
 ## fit statistics and fixed effects of the terminal model
 s$AIC

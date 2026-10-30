@@ -5,7 +5,9 @@
 ## column names (.mf_resid__, .mf_fitted__, .model_resid__). Options given
 ## by the user (aspect, xlab, ylab) must still be respected.
 ## Bundled data only: Pchron (modelFrame example), Prings05 and Pradii03
-## (ringApply help route).
+## (ringApply help route). The fits use the single-level random parts of
+## helper-fits.R; on the bundled data the default three-level fit is near
+## singular.
 data(Pchron, package = "BIOdry", envir = environment())
 data(Prings05, package = "BIOdry", envir = environment())
 data(Pradii03, package = "BIOdry", envir = environment())
@@ -15,7 +17,8 @@ lab <- function(x) as.character(unlist(x))[1L]
 test_that("plot.modelFrame of a fitted model fills the panels and labels the axes", {
     m <- Pchron |>
         modelFrame(to = "cm", MoreArgs = list(mp = c(2, 1, 2.87, 0.85, 0.05, 2.5)),
-                   log.t = FALSE, on.time = FALSE)
+                   form = "log(x) ~ log(csx) + year | tree",
+                   random = nlme::pdDiag(~ 1))
     tr <- plot(m, print.trellis = FALSE)
     expect_true(tr$aspect.fill)
     expect_equal(lab(tr$ylab), "Pearson residuals")
@@ -32,13 +35,13 @@ test_that("plot.frametoLme fills the panels and labels the residual axis", {
         ringApply(lv = 2, fn = "rtimes") |>
         ringApply(lv = "sample", sc.c = Pradii03, rf.t = 2003, fn = "scacum")
     for (rd in c(TRUE, FALSE)) {
-        fit <- frametoLme(dfm2, form = "tdForm", res.data = rd)
+        fit <- fit_tree(dfm2, "time", res.data = rd)
         tr <- plot(fit, print.trellis = FALSE)
         expect_true(tr$aspect.fill)
         expect_equal(lab(tr$ylab), "Pearson residuals")
         expect_equal(lab(tr$xlab), "time")
     }
-    own <- plot(frametoLme(dfm2, form = "tdForm"), aspect = "xy",
+    own <- plot(fit_tree(dfm2, "time"), aspect = "xy",
                 ylab = "residuals", print.trellis = FALSE)
     expect_false(own$aspect.fill)
     expect_equal(lab(own$ylab), "residuals")

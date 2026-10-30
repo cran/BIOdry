@@ -1,24 +1,16 @@
 ## Regression test: plot.muleMan() orders the correlogram panels by plot,
 ## then tree (as numbers), then core, and labels the axes "Lag" and
 ## "Mantel r" unless xlab/ylab are given.
-## Bundled data only: Pchron, Prec, Temp (muleMan help example).
-data(Pchron, package = "BIOdry", envir = environment())
-data(Prec, package = "BIOdry", envir = environment())
-data(Temp, package = "BIOdry", envir = environment())
+## Bundled data only: Pchron, Prec, Temp (muleMan help example), as the
+## processed series of helper-fits.R (no fit: on the bundled data the
+## default three-level fit is near singular).
 
-mule_example <- function() {
-    biom_param <- c(2.87, 0.85, 0.05, 2.5)
-    trwf <- modelFrame(Pchron, to = "cm",
-                       MoreArgs = list(mp = c(2, 1, biom_param)),
-                       log.t = FALSE, on.time = FALSE)
-    aif <- modelFrame(rd = list(Prec, Temp), fn = list("moveYr", "wlai"),
-                      lv = list("year", "year"), form = "lmeForm")
-    set.seed(1)
-    muleMan(trwf, aif, nperm = 100)
-}
+set.seed(1)
+mm_example <- muleMan(trw_series(), ai_series(), rd.var = "x", cd.var = "AI",
+                      nperm = 100)
 
 test_that("panels are ordered by plot, tree and core", {
-    mm <- mule_example()
+    mm <- mm_example
     pdf(NULL); on.exit(dev.off())
     tr <- plot(mm)
     expect_identical(as.character(tr$condlevels[[1]]),
@@ -28,7 +20,7 @@ test_that("panels are ordered by plot, tree and core", {
 })
 
 test_that("axes are labelled Lag and Mantel r unless given", {
-    mm <- mule_example()
+    mm <- mm_example
     pdf(NULL); on.exit(dev.off())
     tr <- plot(mm)
     expect_identical(tr$xlab, "Lag")
@@ -39,7 +31,7 @@ test_that("axes are labelled Lag and Mantel r unless given", {
 })
 
 test_that("each panel keeps its own correlogram values", {
-    mm <- mule_example()
+    mm <- mm_example
     pdf(NULL); on.exit(dev.off())
     tr <- plot(mm)
     g <- as.data.frame(mm$mmgram)

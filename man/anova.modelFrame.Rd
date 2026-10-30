@@ -36,13 +36,16 @@ Felipe Bravo [aut] (ORCID: <https://orcid.org/0000-0001-7348-6695>)}
 data(Pchron, envir = environment())
 biom_param <- c(2.87, 0.85, 0.05, 2.5)
 ## the biomass model with the two Zeide time forms, f(t) = t and
-## f(t) = ln t, fitted by maximum likelihood
+## f(t) = ln t, fitted by maximum likelihood with a tree intercept and a
+## tree-level log(csx) slope
 m_t <- Pchron |>
     modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-               log.t = FALSE, method = 'ML')
+               form = 'log(x) ~ log(csx) + time | tree',
+               random = pdDiag(~ log(csx)), method = 'ML')
 m_lnt <- Pchron |>
     modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-               log.t = TRUE, method = 'ML')
+               form = 'log(x) ~ log(csx) + log(time) | tree',
+               random = pdDiag(~ log(csx)), method = 'ML')
 ## sequential F tests of the fixed effects of one model
 anova(m_t)
 ## both forms have the same number of parameters: compare AIC and BIC

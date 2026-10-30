@@ -2,7 +2,9 @@
 ## must read like nlme's summary: no scientific notation for ordinary
 ## values, and DF as whole numbers. printCoefmat put every column in one
 ## format, so DF printed as 9.8200e+02.
-## Bundled data only: Prings05, Pradii03 (ringApply help route).
+## Bundled data only: Prings05, Pradii03 (ringApply help route). The fit
+## uses the single-level random part of helper-fits.R; on the bundled data
+## the default three-level fit is near singular.
 data(Prings05, package = "BIOdry", envir = environment())
 data(Pradii03, package = "BIOdry", envir = environment())
 
@@ -17,7 +19,7 @@ test_that("the printed fixed-effects table has whole DF and plain values", {
     dfm1 <- ringApply(Prings05, lv = 2, fn = "rtimes")
     dfm2 <- ringApply(dfm1, lv = "sample", sc.c = Pradii03, rf.t = 2003,
                       fn = "scacum")
-    fit <- frametoLme(dfm2, form = "tdForm")
+    fit <- fit_tree(dfm2, "time")
     out <- capture.output(print(fit))
     tab <- fixed_table(out)
     expect_equal(rownames(tab), c("(Intercept)", "log(csx)", "time"))

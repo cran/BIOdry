@@ -318,13 +318,15 @@ plot.modelFrame <- structure(function # Plot modelFrame objects
     ## parameters of the modelFrame example
     data(Pchron, envir = environment())
     biom_param <- c(2.87, 0.85, 0.05, 2.5)
+    ## the biomass model on year with a random intercept per tree
     trwf <- Pchron |>
         modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-                   log.t = FALSE, on.time = FALSE)
-    ## Pearson residuals against fitted values for each core
+                   form = 'log(x) ~ log(csx) + year | tree',
+                   random = pdDiag(~ 1))
+    ## Pearson residuals against fitted values for each tree
     plot(trwf)
-    ## panels by plot only
-    plot(trwf, levels = 'plot', layout = c(2, 1))
+    ## the four trees side by side
+    plot(trwf, layout = c(4, 1))
     ## with form = NULL, the processed series are plotted over time
     Pchron |>
         modelFrame(form = NULL, to = 'cm',

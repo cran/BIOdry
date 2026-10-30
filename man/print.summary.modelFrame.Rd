@@ -25,7 +25,8 @@ data(Pchron, envir = environment())
 biom_param <- c(2.87, 0.85, 0.05, 2.5)
 Pchron |>
     modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-               log.t = FALSE, on.time = FALSE) |>
+               form = 'log(x) ~ log(csx) + year | tree',
+               random = pdDiag(~ 1)) |>
     summary() |>
     print(digits = 3)
 }

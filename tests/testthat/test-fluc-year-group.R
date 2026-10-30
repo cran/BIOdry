@@ -11,7 +11,10 @@ test_that("$fluc carries year once when year is the grouping level", {
                       fn = "scacum")
     dr <- defineDataRoles(dfm2, time = "time",
                           groups = c("year", "plot", "tree", "sample"))
-    fit <- frametoLme(dr, form = "log(x) ~ log(csx) + time | year")
+    ## a random intercept per year is well posed on these data; the
+    ## default random part would be near singular
+    fit <- frametoLme(dr, form = "log(x) ~ log(csx) + time | year",
+                      random = nlme::pdDiag(~ 1))
     fl <- as.data.frame(fit$fluc)
     expect_false("year.1" %in% names(fl))
     expect_equal(anyDuplicated(names(fl)), 0L)

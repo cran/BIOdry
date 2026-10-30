@@ -57,13 +57,20 @@ test_that("shiftFrame on climate data gives plot = P16106, month = Apr", {
     }
 })
 
-test_that("modelFrame(Pchron) fits plot/tree/sample on the right labels", {
-    fit <- modelFrame(Pchron)
-    md <- as.data.frame(nlme::getData(fit$model))
+## The series modelFrame(Pchron) fits, checked without the fit: on the
+## bundled data the default three-level fit is near singular (see
+## helper-fits.R); its grouping counts are checked in
+## test-default-route-3-levels.R.
+test_that("modelFrame(Pchron) prepares plot/tree/sample on the right labels", {
+    md <- as.data.frame(modelFrame(Pchron, form = NULL))
     expect_setequal(as.character(unique(md$plot)), c("P16106", "P44005"))
     expect_true(all(tapply(as.character(md$tree), as.character(md$plot),
                            function(z) length(unique(z))) == 2L))
     ## 0.9.1 reference: 2 plots, 4 trees, 8 cores
-    ng <- fit$model$dims$ngrps
-    expect_equal(unname(ng[c("plot", "tree", "sample")]), c(2L, 4L, 8L))
+    expect_equal(c(length(unique(md$plot)),
+                   length(unique(paste(md$plot, md$tree))),
+                   length(unique(paste(md$plot, md$tree, md$sample)))),
+                 c(2L, 4L, 8L))
+    expect_equal(deparse(tdForm(md)),
+                 "log(x) ~ log(csx) + time | plot/tree/sample")
 })

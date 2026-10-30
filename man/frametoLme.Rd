@@ -129,10 +129,4 @@ fit <- dfm2 |>
                random = pdDiag(~ log(csx)))
 head(fit$fluc)
 print(summary(fit))
-## for comparison, the default random part puts the intercept, log(csx)
-## and ln(time) at plot, tree and sample; here it gives near-zero variance
-## components
-fit0 <- dfm2 |> frametoLme(form = 'tdForm', log.t = TRUE)
-VarCorr(fit0$model)
-c(tree = AIC(fit$model), default = AIC(fit0$model))
 }

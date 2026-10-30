@@ -12,30 +12,34 @@ rings_rtimes_scacum <- function() {
     ringApply(dfm1, lv = "sample", sc.c = Pradii03, rf.t = 2003, fn = "scacum")
 }
 
-expect_fluc_on_time <- function(fit) {
+## the model's time term is 'time', $fluc is built on it, and each $fluc row
+## carries the time value of the input row with the same name
+expect_fluc_on_time <- function(fit, input) {
     expect_equal(deparse(formula(fit$model)), "log(x) ~ log(csx) + time")
     expect_false(is.null(fit$fluc))
     expect_equal(deparse(nlme::getCovariateFormula(fit$fluc)), "~time")
     md <- as.data.frame(fit$model$data)
     fl <- as.data.frame(fit$fluc)
     expect_equal(nrow(fl), nrow(md))
-    key <- function(d) paste(d$plot, d$tree, d$sample, d$time)
-    i <- match(key(fl), key(md))
+    expect_false("year" %in% names(fl))
+    expect_equal(fl$time, input[rownames(fl), "time"])
+    i <- match(rownames(fl), rownames(md))
     expect_false(anyNA(i))
-    pr <- residuals(fit$model, level = 1:3, type = "pearson")
-    lv <- c("plot", "tree", "sample")
-    expect_equal(unname(as.matrix(fl[, paste0(lv, ".res")])),
-                 unname(pr[i, lv]), tolerance = 1e-10)
+    pr <- residuals(fit$model, type = "pearson")
+    expect_equal(fl$tree.res, unname(pr[i]), tolerance = 1e-10)
 }
 
+## The fits use the single-level random part of helper-fits.R; the
+## three-level default route is checked in test-default-route-3-levels.R.
 test_that("$fluc uses 'time' when it is declared with defineDataRoles", {
     rd <- defineDataRoles(rings_rtimes_scacum(), response = "x", time = "time",
                           groups = "plot/tree/sample")
-    expect_fluc_on_time(frametoLme(rd, form = "tdForm"))
+    expect_equal(deparse(tdForm(rd)),
+                 "log(x) ~ log(csx) + time | plot/tree/sample")
+    expect_fluc_on_time(fit_tree(rd, "time"), rd)
 })
 
 test_that("$fluc uses 'time' when the formula string uses it", {
-    fit <- frametoLme(rings_rtimes_scacum(),
-                      form = "log(x) ~ log(csx) + time | plot/tree/sample")
-    expect_fluc_on_time(fit)
+    rd <- rings_rtimes_scacum()
+    expect_fluc_on_time(fit_tree(rd, "time"), rd)
 })

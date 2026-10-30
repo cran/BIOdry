@@ -5,37 +5,36 @@
 ## 0.9.1 did, so that muleMan pairs ring year t with the hydrological year
 ## ending in t. A time variable from metadata decides only when the user
 ## declared it with defineDataRoles(time = ...).
-## Bundled data only: Prec, Temp, Pchron.
+## Bundled data only: Prec, Temp, Pchron (column subsets of documented
+## outputs as muleMan inputs, see helper-fits.R).
 ##
 ## Reference values: CRAN BIOdry 0.9.1 on the same route,
 ##   a <- modelFrame(rd = list(Prec, Temp), fn = list("moveYr", "wlai"),
 ##                   lv = list("year", "year"), form = "lmeForm")
-##   deparse(formula(a$model)); logLik(a$model); nlme::fixef(a$model)
+##   deparse(formula(a$model)); a$model$dims$N
 ## Its model data (AI by plot and year) equal ref-wlai-PTclim05-0.9.1.csv,
-## which is checked below so that both versions fit identical inputs.
+## which is checked below so that both versions work on identical inputs.
+## The default climate random part, pdDiag(~ year) by plot, is singular on
+## these data, so the fit here has a random intercept per plot (see
+## helper-fits.R) and no fitted values of 0.9.1 are compared.
 ref_091 <- list(
     formula = "AI ~ year",
-    N = 100L,
-    logLik = -17.2396616924,
-    fixef = c(-18.9281119833, 0.00998498122232)
+    N = 100L
 )
 
 data(Prec, package = "BIOdry", envir = environment())
 data(Temp, package = "BIOdry", envir = environment())
-data(Pchron, package = "BIOdry", envir = environment())
 
-aridity_fluc <- function() {
+aridity_series <- function() {
     modelFrame(rd = list(Prec, Temp), fn = list("moveYr", "wlai"),
-               lv = list("year", "year"), form = "lmeForm")
+               lv = list("year", "year"), form = NULL)
 }
 
-test_that("the climate model uses 'year' and matches 0.9.1 on identical inputs", {
-    aif <- aridity_fluc()
-    m <- aif$model
-    expect_equal(deparse(formula(m)), ref_091$formula)
-    expect_equal(m$dims$N, ref_091$N)
+test_that("the climate model uses 'year' and 0.9.1's inputs", {
+    ai <- aridity_series()
+    expect_equal(deparse(lmeForm(ai)), "AI ~ year | plot")
     ## identical inputs: AI by plot and year as computed by 0.9.1
-    md <- as.data.frame(m$data)
+    md <- as.data.frame(ai)[!is.na(ai$AI), ]
     md$plot <- as.character(md$plot)
     ref <- read.csv(test_path("ref-wlai-PTclim05-0.9.1.csv"), comment.char = "#")
     ref <- ref[!is.na(ref$AI), ]
@@ -43,12 +42,17 @@ test_that("the climate model uses 'year' and matches 0.9.1 on identical inputs",
                suffixes = c("", ".ref"))
     expect_equal(nrow(k), nrow(ref))
     expect_equal(k$AI, k$AI.ref, tolerance = 1e-10)
-    ## identical fit
-    expect_equal(as.numeric(logLik(m)), ref_091$logLik, tolerance = 1e-6)
-    expect_equal(unname(nlme::fixef(m)), ref_091$fixef, tolerance = 1e-6)
+    ## the fit uses year on all rows with an aridity index
+    fit <- fit_climate(ai)
+    expect_equal(deparse(formula(fit$model)), ref_091$formula)
+    expect_equal(fit$model$dims$N, ref_091$N)
+    ## the climate fluctuations are labeled by the hydrological year's end year
+    fl <- as.data.frame(fit$fluc)
+    expect_true("year" %in% names(fl))
+    expect_false("hydro_year_id" %in% names(fl))
 })
 
-## What muleMan computes from the two $fluc tables: for each core, the
+## What muleMan computes from two fluctuation tables: for each core, the
 ## tree-ring and climate residuals are paired by year and plot, and a Mantel
 ## correlogram of their distances is computed (ecodist::mgram). mantelr, lag
 ## and ngroup are deterministic; pval and the bootstrap limits are not.
@@ -82,21 +86,16 @@ core_key <- function(d) {
 }
 
 test_that("muleMan pairs ring year t with the hydrological year ending in t", {
-    biom_param <- c(2.87, 0.85, 0.05, 2.5)
-    trwf <- modelFrame(Pchron, to = "cm",
-                       MoreArgs = list(mp = c(2, 1, biom_param)),
-                       log.t = FALSE, on.time = FALSE)
-    aif <- aridity_fluc()
-    ## the climate fluctuations are labelled by the hydrological year's end year
-    expect_true("year" %in% names(as.data.frame(aif$fluc)))
-    expect_false("hydro_year_id" %in% names(as.data.frame(aif$fluc)))
-    mm <- muleMan(trwf, aif)
+    ## processed series without a fit (helper-fits.R)
+    trw <- trw_series()
+    ai <- ai_series()
+    mm <- muleMan(trw, ai, rd.var = "x", cd.var = "AI", nperm = 0)
     expect_s3_class(mm, "muleMan")
     out <- as.data.frame(mm$mmgram)
     out$core <- core_key(out)
     out <- out[order(out$core, out$lag), c("core", "lag", "ngroup", "mantelr")]
     ## same years: identical to muleMan
-    same <- correlograms_by_hand(trwf$fluc, aif$fluc)
+    same <- correlograms_by_hand(trw, ai)
     same <- same[order(same$core, same$lag), ]
     expect_equal(nrow(same), nrow(out))
     expect_equal(same$core, out$core)
@@ -104,7 +103,7 @@ test_that("muleMan pairs ring year t with the hydrological year ending in t", {
     expect_equal(same$ngroup, out$ngroup)
     expect_equal(same$mantelr, out$mantelr, tolerance = 1e-8)
     ## climate years shifted by one: the test must notice the difference
-    shifted <- correlograms_by_hand(trwf$fluc, aif$fluc, shift = 1L)
+    shifted <- correlograms_by_hand(trw, ai, shift = 1L)
     shifted <- shifted[order(shifted$core, shifted$lag), ]
     differs <- nrow(shifted) != nrow(out) ||
         !isTRUE(all.equal(shifted$mantelr, out$mantelr, tolerance = 1e-8))

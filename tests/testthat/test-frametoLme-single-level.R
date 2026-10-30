@@ -3,12 +3,14 @@
 ## group instead of a matrix with row labels.
 ## Bundled data only: Prec, Temp, following the muleMan help example
 ## (aridity-index fluctuations with moveYr and wlai through modelFrame).
+## The fit has a random intercept per plot (helper-fits.R); the default
+## climate random part, pdDiag(~ year), is singular on these data.
 data(Prec, package = "BIOdry", envir = environment())
 data(Temp, package = "BIOdry", envir = environment())
 
 aridity_fluc <- function() {
-    modelFrame(rd = list(Prec, Temp), fn = list("moveYr", "wlai"),
-               lv = list("year", "year"), form = "lmeForm")
+    fit_climate(modelFrame(rd = list(Prec, Temp), fn = list("moveYr", "wlai"),
+                           lv = list("year", "year"), form = NULL))
 }
 
 test_that("$fluc of a one-level model equals its Pearson residuals", {

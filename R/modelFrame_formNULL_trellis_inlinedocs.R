@@ -430,10 +430,13 @@ modelFrame <- structure(function # Recursive dispatch of multilevel series funct
     ## breast height (cm), then to total tree biomass (kg)
     biom_param <- c(2.87, 0.85, 0.05, 2.5)
 
-    ## rtimes, scacum and amod stage by stage, then a tdForm model on year
+    ## rtimes, scacum and amod stage by stage, then a model on year with a
+    ## random intercept per tree: these 2 plots x 2 trees x 2 cores support
+    ## variation among trees only (tree labels are unique across plots here)
     Pchron |>
         modelFrame(to = 'cm', MoreArgs = list(mp = c(2, 1, biom_param)),
-                   log.t = FALSE, on.time = FALSE)
+                   form = 'log(x) ~ log(csx) + year | tree',
+                   random = pdDiag(~ 1))
 
     ## the same stages with a Friedman smoother as the terminal step
     Pchron |>

@@ -1,3 +1,24 @@
+# BIOdry 0.9.6
+
+- Tests and help examples only; no change in package behavior. On the
+  bundled data (2 plots, 2 trees per plot, 2 cores per tree) every mixed
+  model with plot, tree and sample levels, the default one included, is
+  singular or close to it, so its estimates depend on the platform's
+  optimizer and BLAS: one test failed on r-release-macos-x86_64 ("singular
+  convergence (7)") and eight failed with MKL. The tests now check
+  formulas, labels and row alignment directly and fit only random parts
+  whose estimates are stable on these data (one grouping level). Checks of
+  the three-level default route run only off CRAN.
+- The help examples of `frametoLme()`, `modelFrame()`,
+  `summary.modelFrame()`, `print.summary.modelFrame()`, `plot.modelFrame()`,
+  `anova.modelFrame()`, `muleMan()` and `plot.muleMan()` fit the same
+  well-posed random parts (a tree intercept, with a tree-level `log(csx)`
+  slope for the time models; a plot intercept for the aridity index), so
+  their printed numbers change. The `frametoLme()` example no longer
+  compares with the default random part. The `muleMan()` examples correlate
+  the processed tree-biomass series with the aridity-index fluctuations.
+- Shorter test time: about 12 s instead of 33 s on the maintainer's machine.
+
 # BIOdry 0.9.5
 
 - Fixed `frametoLme()`: residual series in `$fluc` could be attached to the
